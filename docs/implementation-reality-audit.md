@@ -27,6 +27,7 @@ Statuslegenda: `REAL AND TESTED` | `REAL BUT NOT FULLY TESTED` | `IMPLEMENTED WI
 | Audit logs | REAL BUT NOT FULLY TESTED | appendAuditLog wired in kritieke actions |
 | Reports / exports | PARTIALLY IMPLEMENTED | Admin reports route/UI shell; CSV/PDF exports niet volledig |
 | Email (Resend) | IMPLEMENTED WITH MOCK PROVIDER | Abstraction; fail-closed zonder key |
+| E2E smoke | REAL AND TESTED | Playwright home/login/register PASS tegen lokale `pnpm dev` |
 | Deployment | DOCUMENTED ONLY | Vercel/DNS docs; geen productie-deploy |
 | Domain partners.vdbdigital.nl | DOCUMENTED ONLY | Geen DNS-wijziging uitgevoerd |
 | Production secrets | BLOCKED | Niet geconfigureerd |
@@ -38,6 +39,7 @@ Statuslegenda: `REAL AND TESTED` | `REAL BUT NOT FULLY TESTED` | `IMPLEMENTED WI
 - `pnpm test` PASS (29)
 - `pnpm test:integration` PASS (5) met `SUPABASE_DB_URL`
 - `pnpm test:db` PASS (1)
+- `pnpm test:e2e` PASS (3) met `BASE_URL=http://127.0.0.1:3000`
 - `pnpm build` PASS
 - `npx supabase start` + migrations + seed SUCCEEDED op lokale Docker
 
