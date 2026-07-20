@@ -1,0 +1,20 @@
+# dependencies and builds
+/node_modules
+/.next/
+/out/
+/build
+/coverage
+/test-results
+/playwright-report
+*.tsbuildinfo
+# local environment and platform state
+.env
+.env.*
+!.env.example
+.vercel
+supabase/.branches
+supabase/.temp
+# logs and OS files
+*.log
+.DS_Store
+*.pem
