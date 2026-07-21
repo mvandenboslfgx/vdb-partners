@@ -10,7 +10,15 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 const personalSchema = z.object({ name: z.string().trim().min(2).max(120), dateOfBirth: z.coerce.date().refine((value) => (Date.now() - value.getTime()) / 31_557_600_000 >= 18, "You must be at least 18") });
 const accountSchema = z.object({ accountType: z.enum(["particular", "sole_trader", "company"]), publicName: z.string().trim().min(2).max(160), legalName: z.string().trim().min(2).max(160).optional(), registrationNumber: z.string().trim().max(80).optional(), vatNumber: z.string().trim().max(80).optional(), countryCode: z.string().trim().length(2).default("NL") });
-const payoutSchema = z.object({ method: z.enum(["bank_transfer", "cash"]), iban: z.string().trim().min(15).max(34).optional(), accountHolder: z.string().trim().min(2).max(160).optional() }).superRefine((value, ctx) => { if (value.method === "bank_transfer" && (!value.iban || !value.accountHolder)) ctx.addIssue({ code: "custom", message: "IBAN and account holder are required" }); });
+const payoutSchema = z.object({
+  method: z.enum(["bank_transfer", "cash"]),
+  iban: z.string().trim().min(15).max(34).optional().or(z.literal("")).transform((value) => (value ? value : undefined)),
+  accountHolder: z.string().trim().min(2).max(160).optional().or(z.literal("")).transform((value) => (value ? value : undefined)),
+}).superRefine((value, ctx) => {
+  if (value.method === "bank_transfer" && (!value.iban || !value.accountHolder)) {
+    ctx.addIssue({ code: "custom", message: "IBAN and account holder are required" });
+  }
+});
 
 async function sellerForUser(userId: string) {
   const db = createAdminClient();

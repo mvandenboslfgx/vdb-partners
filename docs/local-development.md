@@ -76,11 +76,16 @@ pnpm test
 pnpm test:integration   # loads .env.local; requires stack on 54421/54422
 pnpm test:db
 $env:BASE_URL="http://127.0.0.1:3000"
+$env:PLAYWRIGHT_SKIP_WEBSERVER="1"   # when Next already runs on :3000
 pnpm test:e2e
+# or only the UI business flow:
+pnpm exec playwright test tests/e2e/business-flow.spec.ts
 pnpm build
 ```
 
 `tests/integration/business-flow.db.test.ts` sets `commission_hold_days` to `0` so commissions can become `available` immediately after delivery in local validation.
+
+`tests/e2e/business-flow.spec.ts` covers browser UI: seller onboarding → owner approve → sale → local settlement → commission visibility. Requires healthy API on **54421** and matching `.env.local` keys.
 
 `ENCRYPTION_KEY` must be 64 hex characters (32 bytes) or valid base64 for 32 bytes.
 
