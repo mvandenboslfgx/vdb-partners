@@ -11,3 +11,21 @@ Before adding a financial workflow, add deterministic cent-based unit tests, dat
 pnpm db:start
 pnpm test:integration -- tests/integration/business-flow.db.test.ts
 ```
+
+## Live JWT/RLS matrix
+
+`tests/integration/authenticated-rls-matrix.test.ts` creates real Auth users for owner, finance/sales/support admins, and seller statuses (approved A/B, pending, suspended, blocked). Assertions use the **anon key + bearer access token**. Service role is fixture-only. See `docs/jwt-rls-validation-matrix.md`.
+
+```powershell
+pnpm test:integration -- tests/integration/authenticated-rls-matrix.test.ts
+```
+
+## UI business E2E
+
+`tests/e2e/business-flow.spec.ts` covers browser onboarding → approval → sale → local settlement → commission visibility.
+
+```powershell
+$env:BASE_URL="http://127.0.0.1:3000"
+$env:PLAYWRIGHT_SKIP_WEBSERVER="1"
+pnpm test:e2e
+```

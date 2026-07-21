@@ -87,6 +87,8 @@ pnpm build
 
 `tests/e2e/business-flow.spec.ts` covers browser UI: seller onboarding → owner approve → sale → local settlement → commission visibility. Requires healthy API on **54421** and matching `.env.local` keys.
 
+`tests/integration/authenticated-rls-matrix.test.ts` requires `NEXT_PUBLIC_SUPABASE_ANON_KEY` plus the service role for fixtures only. See `docs/jwt-rls-validation-matrix.md`.
+
 `ENCRYPTION_KEY` must be 64 hex characters (32 bytes) or valid base64 for 32 bytes.
 
 ## Branding

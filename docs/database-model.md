@@ -5,7 +5,7 @@
 - The customer is always charged by **VDB Digital Software**. `payments.payee_legal_name` is constrained to that legal name; sellers are compensated through `payouts`, never customer payments.
 - Financial history is retained. Foreign keys that feed financial history use `ON DELETE RESTRICT`; `ledger_entries` is append-only at both RLS and trigger level. Corrections require a balancing compensating transaction.
 - Every application entity uses a UUID primary key. Mutable entities include `created_at` and `updated_at`; immutable event/history tables retain `created_at`.
-- All public tables have RLS enabled. Roles live in `user_roles`, while private security-definer helpers resolve the current role without RLS recursion.
+- All public tables have RLS enabled. Roles live in `user_roles`, while private security-definer helpers resolve the current role without RLS recursion. Seller status helpers (`current_approved_seller_id`, `current_readable_seller_id`) gate catalogue vs historical commercial access. Live JWT proof: `docs/jwt-rls-validation-matrix.md`.
 
 ## Identity and partner onboarding
 

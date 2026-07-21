@@ -4,12 +4,13 @@
 **Eindstatus:**
 
 ```text
-VDB PARTNER PORTAL LOCAL UI E2E PASS
+VDB PARTNER PORTAL LOCAL AUTHORIZATION PASS
 PRODUCTION NOT ACTIVATED
 EXTERNAL PROVIDERS NOT ACTIVATED
 FULL BUSINESS DB FLOW VALIDATED LOCALLY
 UI BUSINESS FLOW VALIDATED IN BROWSER
-JWT RLS MFA PROVIDERS EXPORTS PRODUCTION STILL OPEN
+JWT RLS MATRIX VALIDATED LOCALLY
+MFA PROVIDERS EXPORTS PRODUCTION STILL OPEN
 ```
 
 Statuslegenda: `REAL AND TESTED` | `REAL BUT NOT FULLY TESTED` | `IMPLEMENTED WITH MOCK PROVIDER` | `PARTIALLY IMPLEMENTED` | `DOCUMENTED ONLY` | `NOT IMPLEMENTED` | `BLOCKED`
@@ -46,38 +47,36 @@ Source of truth: `supabase/config.toml` + `.env.local` (gitignored) + `.env.exam
 | Cash payout | REAL AND TESTED | confirmed_received + cash_receipts row |
 | Refund after payout | REAL AND TESTED | Old payout remains paid; compensating adjustment + ledger; re-payout blocked |
 | PDF receipt | REAL BUT NOT FULLY TESTED | Generator aanwezig; niet in DB assert |
-| RLS | REAL AND TESTED (migrations) | Policies + grants; live JWT matrix per rol nog open |
+| RLS | REAL AND TESTED | Live JWT matrix: `authenticated-rls-matrix.test.ts` (20) + migration `20260721000004` |
 | Reports / exports | PARTIALLY IMPLEMENTED | UI shell |
 | Email (Resend) | IMPLEMENTED WITH MOCK PROVIDER | Niet geactiveerd |
 | E2E smoke (Playwright) | REAL AND TESTED | Home/login/register |
 | Full UI business E2E | REAL AND TESTED | `tests/e2e/business-flow.spec.ts`: onboarding → approve → sale → local settlement → commission zichtbaar |
+| JWT/RLS matrix | REAL AND TESTED | Anon + access token; seller isolation; pending/suspended/blocked; admin negatives |
 | Deployment / domain / secrets | DOCUMENTED ONLY / BLOCKED | Niet geactiveerd |
 
 ## Lokaal bewezen (2026-07-21)
 
 - `pnpm typecheck` PASS
 - `pnpm test` PASS (29)
-- `pnpm test:integration` PASS (8) tegen API **54421** / DB **54422**
-  - inclusief `business-flow.db.test.ts`: onboarding → approval → order → manual payment → delivery → commission → bank payout → cash payout → refund-after-payout
+- `pnpm test:integration` PASS (28) tegen API **54421** / DB **54422**
+  - `business-flow.db.test.ts` (8) + `authenticated-rls-matrix.test.ts` (20)
 - `pnpm test:db` PASS
 - Playwright smoke PASS (3)
-- Playwright UI business flow PASS (5) tegen Next `127.0.0.1:3000` + Supabase **54421**
-  - cookies gewist per login; Zod `.guid()` accepteert seed nil-style UUID’s
-- Migrations inclusief grants + per-table number triggers + SECURITY DEFINER role helpers
+- Playwright UI business flow PASS (5)
+- Migrations inclusief grants + per-table number triggers + SECURITY DEFINER role helpers + seller status / finance write guards
 
 ## Volgende fase
 
-1. Live JWT/RLS-tests per rol
-2. Admin-MFA afdwingen
-3. Mollie / Resend / KYC activeren
-4. Rapportage-exports
-5. Productie-Supabase, Vercel, domein
-6. Juridische/fiscale review + branding-asset
+1. Admin-MFA afdwingen
+2. Mollie / Resend / KYC activeren
+3. Rapportage-exports
+4. Productie-Supabase, Vercel, domein
+5. Juridische/fiscale review + branding-asset
 
 ## Bewust niet geclaimd
 
 - Productie-activatie
 - Live Mollie/Resend/KYC
-- Live JWT/RLS-matrix per rol in CI
 - Live MFA enforcement
 - Bank/cash payout via UI (DB-pad wel bewezen; UI E2E stopt bij commission visibility na settlement)
