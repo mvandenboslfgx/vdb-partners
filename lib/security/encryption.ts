@@ -1,7 +1,8 @@
-import "server-only";
 import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
 import { env } from "@/lib/env";
 
+// Server actions and server-only workflow entry points are the authorization
+// boundary. This module intentionally remains Node-test compatible.
 function key() {
   if (!env.ENCRYPTION_KEY) throw new Error("ENCRYPTION_KEY is required to encrypt bank details");
   const value = Buffer.from(env.ENCRYPTION_KEY, /^[0-9a-f]{64}$/i.test(env.ENCRYPTION_KEY) ? "hex" : "base64");

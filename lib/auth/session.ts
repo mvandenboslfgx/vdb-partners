@@ -15,8 +15,29 @@ export async function getCurrentProfile(user?: User): Promise<CurrentProfile | n
   const supabase = await createClient();
   const currentUser = user ?? (await supabase.auth.getUser()).data.user;
   if (!currentUser) return null;
-  const { data, error } = await supabase.from("profiles").select("id, role, seller_approved").eq("id", currentUser.id).maybeSingle();
-  if (error) throw error;
-  if (!data || !isRole(data.role)) return null;
-  return { id: data.id as string, role: data.role, sellerApproved: Boolean(data.seller_approved), email: currentUser.email ?? null };
+
+  const [{ data: profile, error: profileError }, { data: roles, error: rolesError }] = await Promise.all([
+    supabase.from("profiles").select("id, display_name").eq("id", currentUser.id).maybeSingle(),
+    supabase.from("user_roles").select("role").eq("user_id", currentUser.id),
+  ]);
+  if (profileError) throw profileError;
+  if (rolesError) throw rolesError;
+  if (!profile) return null;
+
+  const rolePriority: Role[] = ["owner", "finance_admin", "sales_admin", "support_admin", "seller"];
+  const role = rolePriority.find((candidate) => roles?.some((assignment) => assignment.role === candidate));
+  if (!role || !isRole(role)) return null;
+
+  let sellerApproved = false;
+  if (roles?.some((assignment) => assignment.role === "seller")) {
+    const { data: seller, error: sellerError } = await supabase
+      .from("seller_profiles")
+      .select("status")
+      .eq("user_id", currentUser.id)
+      .maybeSingle();
+    if (sellerError) throw sellerError;
+    sellerApproved = seller?.status === "approved";
+  }
+
+  return { id: profile.id, role, sellerApproved, email: currentUser.email ?? null };
 }

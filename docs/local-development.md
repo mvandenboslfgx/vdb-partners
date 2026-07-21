@@ -59,19 +59,30 @@ insert into public.user_roles (user_id, role)
 values ('<auth-user-uuid>', 'owner');
 ```
 
+### Commission release tests
+
+Local business-flow tests set `commission_hold_days` to `0` so a delivered order can be released immediately. Restore the normal local default after ad-hoc experiments when needed:
+
+```sql
+update public.system_settings set value = '7'::jsonb where key = 'commission_hold_days';
+```
+
 ## Tests
 
 ```bash
 pnpm typecheck
 pnpm lint
 pnpm test
-$env:SUPABASE_DB_URL="postgresql://postgres:postgres@127.0.0.1:54422/postgres"
-pnpm test:integration
+pnpm test:integration   # loads .env.local; requires stack on 54421/54422
 pnpm test:db
 $env:BASE_URL="http://127.0.0.1:3000"
 pnpm test:e2e
 pnpm build
 ```
+
+`tests/integration/business-flow.db.test.ts` sets `commission_hold_days` to `0` so commissions can become `available` immediately after delivery in local validation.
+
+`ENCRYPTION_KEY` must be 64 hex characters (32 bytes) or valid base64 for 32 bytes.
 
 ## Branding
 

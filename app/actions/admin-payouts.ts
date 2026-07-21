@@ -73,68 +73,14 @@ export async function createPayoutBatch(input: {
   const { data: batch, error: batchError } = await db
     .from("payout_batches")
     .insert({
-      batch_number: `VDB-BATCH-TEMP-${Date.now()}`,
       status: "draft",
       currency: "EUR",
       prepared_by: actor.id,
-      total_amount_cents: total,
-      name: input.name,
     })
     .select()
     .single();
 
-  if (batchError) {
-    // Fallback without name column if schema variant
-    const { data: batch2, error: batchError2 } = await db
-      .from("payout_batches")
-      .insert({
-        status: "draft",
-        currency: "EUR",
-        prepared_by: actor.id,
-        total_amount_cents: total,
-      })
-      .select()
-      .single();
-    if (batchError2) throw batchError2;
-
-    const { data: payout, error: payoutError } = await db
-      .from("payouts")
-      .insert({
-        payout_batch_id: batch2.id,
-        seller_id: input.sellerId,
-        method: input.method,
-        status: "draft",
-        currency: "EUR",
-        total_amount_cents: total,
-      })
-      .select()
-      .single();
-    if (payoutError) throw payoutError;
-
-    const items = mapped.map((c) => ({
-      payout_id: payout.id,
-      commission_id: c.id,
-      amount_cents: c.amount,
-    }));
-    const { error: itemsError } = await db.from("payout_items").insert(items);
-    if (itemsError) throw itemsError;
-
-    await db
-      .from("commissions")
-      .update({ status: "scheduled_for_payout" })
-      .in("id", input.commissionIds);
-
-    await appendAuditLog({
-      actor: actor.id,
-      role: actor.role,
-      action: "payout_batch.create",
-      entityType: "payout_batch",
-      entityId: batch2.id,
-      after: { sellerId: input.sellerId, method: input.method, total },
-    });
-
-    return { batch: batch2, payout };
-  }
+  if (batchError) throw batchError;
 
   const { data: payout, error: payoutError } = await db
     .from("payouts")
@@ -315,14 +261,12 @@ export async function prepareCashPayoutAction(input: {
   try {
     await db.from("cash_receipts").insert({
       payout_id: payout.id,
-      receipt_number: receiptNumber,
-      recipient_name: input.recipientName,
-      location: input.location ?? null,
-      status: "awaiting_confirmation",
-      prepared_by: actor.id,
+      receipt_reference: receiptNumber,
+      received_by: actor.id,
+      received_at: new Date().toISOString(),
     });
-  } catch {
-    // Table/column variants must not block payout preparation during local schema drift.
+  } catch (error) {
+    throw error;
   }
 
   await appendAuditLog({
