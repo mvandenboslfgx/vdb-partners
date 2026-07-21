@@ -1,6 +1,13 @@
 project_id = "vdb-partners"
 
-# Ports are offset from Supabase defaults to avoid collisions with other local VDB projects.
+# Canonical local ports for THIS project only.
+# Do not use 54321/54322 — those belong to other local VDB stacks (e.g. vdb-digital-mobile-local).
+#
+#   API / Kong:  http://127.0.0.1:54421
+#   Database:    postgresql://postgres:postgres@127.0.0.1:54422/postgres
+#   Studio:      http://127.0.0.1:54423
+#   Mailpit:     http://127.0.0.1:54424
+#
 [api]
 enabled = true
 port = 54421
@@ -17,7 +24,7 @@ major_version = 17
 enabled = true
 port = 54423
 
-[inbucket]
+[local_smtp]
 enabled = true
 port = 54424
 

@@ -21,15 +21,29 @@ Verkopers ontvangen uitsluitend commissie via VDB (bank of contant).
 pnpm install
 cp .env.example .env.local
 pnpm db:start
+npx supabase status   # verify ports below
 pnpm db:reset
 pnpm dev
 ```
 
-Owner-account: maak een Auth-user in Studio, koppel daarna:
+### Canonical local Supabase ports (`vdb-partners` only)
+
+| Service | Port / URL |
+|---------|------------|
+| API | `http://127.0.0.1:54421` |
+| Database | `postgresql://postgres:postgres@127.0.0.1:54422/postgres` |
+| Studio | `http://127.0.0.1:54423` |
+| Mailpit | `http://127.0.0.1:54424` |
+
+**Niet** `54321`/`54322`/`54323` gebruiken — die zijn voor andere lokale VDB-projecten.
+
+Owner-account: Auth-user in Studio (`54423`), daarna:
 
 ```sql
 insert into public.user_roles (user_id, role) values ('<auth-user-uuid>', 'owner');
 ```
+
+Zie `docs/local-development.md` voor details.
 
 ## Scripts
 
@@ -39,7 +53,7 @@ insert into public.user_roles (user_id, role) values ('<auth-user-uuid>', 'owner
 | `pnpm lint` | ESLint |
 | `pnpm typecheck` | TypeScript |
 | `pnpm test` | Unit tests |
-| `pnpm test:integration` | Integratietests (vereist `SUPABASE_DB_URL` voor DB-afhankelijke suites) |
+| `pnpm test:integration` | Integratietests (vereist `SUPABASE_DB_URL` op **54422**) |
 | `pnpm test:db` | Migratiecontracttests |
 | `pnpm test:e2e` | Playwright (vereist `BASE_URL`) |
 | `pnpm build` | Productiebuild |
@@ -61,7 +75,8 @@ Zonder asset: tekstbranding alleen.
 ## Status
 
 ```text
-LOCAL INTEGRATION PASS — EXTERNAL PROVIDERS NOT ACTIVATED
+VDB PARTNER PORTAL LOCAL INTEGRATION PASS
+PRODUCTION NOT ACTIVATED
+EXTERNAL PROVIDERS NOT ACTIVATED
+FULL BUSINESS E2E VALIDATION INCOMPLETE
 ```
-
-Geen productieclaims zonder geconfigureerde providers, DNS en smoke tests.

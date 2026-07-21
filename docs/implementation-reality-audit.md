@@ -1,9 +1,31 @@
 # Implementation Reality Audit — VDB Partner Portal
 
-**Datum:** 2026-07-20  
-**Eindstatus:** `LOCAL INTEGRATION PASS — EXTERNAL PROVIDERS NOT ACTIVATED`
+**Laatste poortverificatie:** 2026-07-21  
+**Eindstatus:**
+
+```text
+VDB PARTNER PORTAL LOCAL INTEGRATION PASS
+PRODUCTION NOT ACTIVATED
+EXTERNAL PROVIDERS NOT ACTIVATED
+FULL BUSINESS E2E VALIDATION INCOMPLETE
+```
 
 Statuslegenda: `REAL AND TESTED` | `REAL BUT NOT FULLY TESTED` | `IMPLEMENTED WITH MOCK PROVIDER` | `PARTIALLY IMPLEMENTED` | `DOCUMENTED ONLY` | `NOT IMPLEMENTED` | `BLOCKED`
+
+## Canonical local Supabase stack
+
+Verified with `npx supabase status` and `docker ps` on 2026-07-21. Containers: `supabase_*_vdb-partners`.
+
+| Service | Active endpoint |
+|---------|-----------------|
+| API | `http://127.0.0.1:54421` |
+| Database | `postgresql://postgres:postgres@127.0.0.1:54422/postgres` |
+| Studio | `http://127.0.0.1:54423` |
+| Mailpit | `http://127.0.0.1:54424` |
+
+Source of truth: `supabase/config.toml` + `.env.local` (gitignored) + `.env.example`.
+
+**Correction:** An earlier report mentioned Studio on `54323`. That referred to a first local start that still used default ports before the config offset. Those defaults are **not** the canonical `vdb-partners` stack. Do not point the app or tests at `54321`/`54322`/`54323`.
 
 | Onderdeel | Status | Bewijs / notitie |
 |-----------|--------|------------------|
@@ -28,6 +50,7 @@ Statuslegenda: `REAL AND TESTED` | `REAL BUT NOT FULLY TESTED` | `IMPLEMENTED WI
 | Reports / exports | PARTIALLY IMPLEMENTED | Admin reports route/UI shell; CSV/PDF exports niet volledig |
 | Email (Resend) | IMPLEMENTED WITH MOCK PROVIDER | Abstraction; fail-closed zonder key |
 | E2E smoke | REAL AND TESTED | Playwright home/login/register PASS tegen lokale `pnpm dev` |
+| Full business E2E | NOT IMPLEMENTED | Onboarding → order → payment → delivery → commission → payout → refund-after-payout nog open |
 | Deployment | DOCUMENTED ONLY | Vercel/DNS docs; geen productie-deploy |
 | Domain partners.vdbdigital.nl | DOCUMENTED ONLY | Geen DNS-wijziging uitgevoerd |
 | Production secrets | BLOCKED | Niet geconfigureerd |
@@ -37,16 +60,27 @@ Statuslegenda: `REAL AND TESTED` | `REAL BUT NOT FULLY TESTED` | `IMPLEMENTED WI
 - `pnpm typecheck` PASS
 - `pnpm lint` PASS (warnings only)
 - `pnpm test` PASS (29)
-- `pnpm test:integration` PASS (5) met `SUPABASE_DB_URL`
+- `pnpm test:integration` PASS (5) met `SUPABASE_DB_URL` op **54422**
 - `pnpm test:db` PASS (1)
 - `pnpm test:e2e` PASS (3) met `BASE_URL=http://127.0.0.1:3000`
 - `pnpm build` PASS
-- `npx supabase start` + migrations + seed SUCCEEDED op lokale Docker
+- `npx supabase start` + migrations + seed SUCCEEDED op Docker (`vdb-partners`, poorten **54421–54424**)
+
+## Volgende fase (geen feature-stapeling)
+
+1. Database-backed E2E: seller onboarding → approval → order → betaling → levering → commissie → payout
+2. E2E: refund na payout (negatieve correctie, oude payout blijft)
+3. Live JWT/RLS-tests per rol
+4. Admin-MFA afdwingen
+5. Mollie / Resend / KYC activeren en valideren
+6. Rapportage-exports afbouwen
+7. Productie-Supabase, Vercel, domein
+8. Juridische/fiscale review + branding-asset
 
 ## Bewust niet geclaimd
 
 - Productie-activatie
 - Live Mollie/Resend/KYC
-- Volledige Playwright scenario’s 1–7
+- Volledige Playwright business-scenario’s
 - Live MFA enforcement
 - Volledige rapportage-exports

@@ -11,35 +11,48 @@
 ```bash
 pnpm install
 cp .env.example .env.local
+pnpm db:start
+npx supabase status
 ```
 
-Fill `.env.local` with local Supabase keys from `pnpm db:status` / `npx supabase status`.
+Copy keys from `npx supabase status` into `.env.local`. A reference `.env.local` for this machine should target **only** the `vdb-partners` ports below.
 
-## Supabase
+## Canonical local ports (`vdb-partners`)
 
-This project uses **offset ports** (`54421+`) in `supabase/config.toml` so it does not collide with other local VDB stacks that use default `54321/54322`.
+| Service | URL / connection |
+|---------|------------------|
+| API / Kong | `http://127.0.0.1:54421` |
+| Database | `postgresql://postgres:postgres@127.0.0.1:54422/postgres` |
+| Studio | `http://127.0.0.1:54423` |
+| Mailpit | `http://127.0.0.1:54424` |
+
+These values are defined in `supabase/config.toml` and must match `.env.local`.
+
+**Do not use `54321` / `54322` / `54323` for this project.** Those defaults belong to other local stacks (for example `vdb-digital-mobile-local`). Mixing them causes tests and the app to hit the wrong database.
+
+### Port conflict history (resolved)
+
+On 2026-07-20 the first local start still used default ports `54321+` before `config.toml` was offset. The eindrapport briefly mentioned Studio on `54323` from that earlier run. As of **2026-07-21** the active `vdb-partners` stack was re-verified with:
+
+```bash
+npx supabase status
+docker ps --format "table {{.Names}}\t{{.Ports}}"
+```
+
+Containers named `supabase_*_vdb-partners` bind **54421–54424** only.
+
+## Commands
 
 ```bash
 pnpm db:start
-pnpm db:reset   # applies migrations + seed
+pnpm db:reset   # migrations + seed against DB on 54422
 pnpm db:status
+pnpm dev        # http://127.0.0.1:3000
 ```
-
-If port bind fails, stop the other local project first, or keep the offset ports.
-
-**Note (2026-07-20):** starting this stack required temporarily stopping `vdb-digital-mobile-local` because it occupied `54322`. Restart that project separately when needed; after this repo uses `54422`, both can run side by side.
-
-## App
-
-```bash
-pnpm dev
-```
-
-Open http://localhost:3000
 
 ### Owner bootstrap
 
-Seed does **not** create auth users. Create a user in Studio Auth, then:
+Seed does **not** create auth users. Create a user in Studio (`http://127.0.0.1:54423`) Auth, then:
 
 ```sql
 insert into public.user_roles (user_id, role)
