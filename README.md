@@ -2,16 +2,18 @@
 
 Partnerplatform voor **VDB Digital Software** (`partners.vdbdigital.nl`).
 
+`REPOSITORY_ROLE=PARTNER_CLIENT` â€” aparte frontend-repo; deelt uiteindelijk Auth/DB met VDB Digital 2.0 en Mobile. Canonieke backend-eigenaar: **VDB Digital 2.0**. Zie `docs/shared-backend-architecture.md`.
+
 ## Harde betaalregel
 
-Klanten betalen altijd rechtstreeks aan VDB Digital Software.  
+Klanten betalen altijd rechtstreeks aan VDB Digital Software.
 Verkopers ontvangen uitsluitend commissie via VDB (bank of contant).
 
 ## Stack
 
 - Next.js 16 (App Router) + TypeScript strict
 - Tailwind CSS + Radix/shadcn-style UI
-- Supabase (Postgres, Auth, RLS, Storage)
+- Supabase (Postgres, Auth, RLS, Storage) â€” lokaal geÃ¯soleerd; staging/productie gedeeld (nog niet geactiveerd)
 - Mollie / Resend / identity provider abstractions (fail-closed)
 - Vitest + Playwright
 
@@ -34,8 +36,10 @@ pnpm dev
 | Database | `postgresql://postgres:postgres@127.0.0.1:54422/postgres` |
 | Studio | `http://127.0.0.1:54423` |
 | Mailpit | `http://127.0.0.1:54424` |
+| Analytics | `http://127.0.0.1:54427` |
 
-**Niet** `54321`/`54322`/`54323` gebruiken — die zijn voor andere lokale VDB-projecten.
+**Niet** `54321`/`54322`/`54323` (Digital 2.0) of `54521`/`54522`/`54523` (Mobile) gebruiken.
+Agents mogen **geen** sibling-containers stoppen. Isolatie-pass: `docs/partner-local-isolation-pass.md`.
 
 Owner-account: Auth-user in Studio (`54423`), daarna:
 
@@ -43,7 +47,21 @@ Owner-account: Auth-user in Studio (`54423`), daarna:
 insert into public.user_roles (user_id, role) values ('<auth-user-uuid>', 'owner');
 ```
 
-Zie `docs/local-development.md` voor details.
+Zie `docs/local-development.md` en `docs/environment-matrix.md`.
+
+## Multi-repo docs
+
+| Document | Inhoud |
+|----------|--------|
+| `docs/shared-backend-architecture.md` | EÃ©n backend, drie clients |
+| `docs/repository-responsibilities.md` | Wat deze repo wel/niet mag |
+| `docs/environment-matrix.md` | Local / staging / production |
+| `docs/backend-contract.md` | `vdb-backend-contract@0.1.0` / `schemaVersion` `2026.07.22.freeze` |
+| `docs/financial-single-source-of-truth.md` | Finance is platform-owned, not portal-authoritative |
+| `docs/partner-local-isolation-pass.md` | Isolation acceptance checklist |
+| `docs/staging-integration-plan.md` | Gedeelde staging |
+| `docs/cross-repository-test-plan.md` | Scenarioâ€™s 1â€“10 |
+| `docs/migration-ownership.md` | Alleen VDB Digital 2.0 remote |
 
 ## Scripts
 
@@ -69,17 +87,25 @@ Zie `docs/`, met name:
 
 ## Branding-asset
 
-Plaats het officiële logo in `public/brand/` (zie `public/brand/README.md`).  
+Plaats het officiÃ«le logo in `public/brand/` (zie `public/brand/README.md`).
 Zonder asset: tekstbranding alleen.
 
 ## Status
 
 ```text
-VDB PARTNER PORTAL LOCAL AUTHORIZATION PASS
-PRODUCTION NOT ACTIVATED
-EXTERNAL PROVIDERS NOT ACTIVATED
-FULL BUSINESS DB FLOW VALIDATED LOCALLY
-UI BUSINESS FLOW VALIDATED IN BROWSER
-JWT RLS MATRIX VALIDATED LOCALLY
-MFA PROVIDERS EXPORTS PRODUCTION STILL OPEN
+VDB PARTNER SHARED BACKEND AND LOCAL ISOLATION PASS
+REPOSITORY_ROLE=PARTNER_CLIENT
+CANONICAL_BACKEND_OWNER=VDB Digital 2.0 (vdbdigital2 / 54321)
+LOCAL_PROJECT_ID=vdb-partners
+LOCAL_API=54421
+LOCAL_DB=54422
+LOCAL_STUDIO=54423
+LOCAL_MAIL=54424
+LOCAL_ANALYTICS=54427
+CONTRACT=vdb-backend-contract@0.1.0
+SCHEMA_VERSION=2026.07.22.freeze
+SIBLING_RESOURCES_CHANGED=NO
+REMOTE_ACTIONS=NONE
+PRODUCTION_NOT_ACTIVATED
+EXTERNAL_PROVIDERS_NOT_ACTIVATED
 ```

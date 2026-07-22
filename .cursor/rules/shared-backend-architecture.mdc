@@ -1,0 +1,60 @@
+---
+description: Shared VDB backend architecture freeze â€” Partner Portal is PARTNER_CLIENT
+alwaysApply: true
+---
+
+# VDB Digital â€” Shared Backend Architecture Freeze
+
+This repository is **VDB Partner Portal / Affiliate**.
+
+`REPOSITORY_ROLE=PARTNER_CLIENT`
+
+## Platform
+
+Three separate repositories share one eventual Supabase backend:
+
+1. **VDB Digital 2.0** â€” website + web admin â€” `CANONICAL_BACKEND_OWNER`
+2. **VDB Digital Mobile** â€” `MOBILE_CLIENT`
+3. **This repo (Partner Portal)** â€” `PARTNER_CLIENT`
+
+## Environments
+
+| Env | Rule |
+|-----|------|
+| local | Isolated Supabase only: `project_id=vdb-partners`, ports **54421â€“54424**, analytics **54427**, containers `supabase_*_vdb-partners` |
+| staging | Same shared VDB staging project as website + mobile (not created yet) |
+| production | Same shared VDB production project (not activated) |
+
+Local isolation does **not** mean three production databases.
+
+## Hard prohibitions
+
+- Do not modify sibling repositories (`vdbdigital2.0`, `vdb-app`, etc.)
+- Do not stop, remove, or recreate Docker containers that are not `*_vdb-partners`
+- Do not use Docker wildcards that could hit other projects
+- Do not kill global Node/PowerShell/Java processes belonging to other workspaces
+- Do not claim ports `54321` / `54322` / `54323` (other local VDB stacks)
+- Do not apply remote migrations, production Edge deploys, live Mollie, production seed/reset, git push, or store uploads without explicit owner approval
+
+On conflict: report it, stop only this repoâ€™s processes, change nothing outside this repo.
+
+## Backend ownership
+
+Canonical owner of production schema/RLS/RPC/Edge/Mollie/types: **VDB Digital 2.0**.
+
+This Partner Portal may:
+
+- keep local migrations for isolated development/tests;
+- propose backend changes (tables, policies, RPCs, tests);
+
+This Partner Portal must **not**:
+
+- apply independent remote production migrations;
+- invent a second auth system or a second commission/payout ledger for â€œportal-onlyâ€ money.
+
+When schema is needed: write a backend change proposal â†’ validate locally â†’ land the definitive migration in VDB Digital 2.0 â†’ bump the shared contract version here.
+
+## Identity direction
+
+Target shared roles: `customer`, `partner_pending`, `partner`, `staff`, `admin`, `owner`.
+Current local portal roles (`seller`, `finance_admin`, â€¦) are a **local contract** until mapped into the canonical backend.

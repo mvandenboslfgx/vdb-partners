@@ -1,12 +1,16 @@
 project_id = "vdb-partners"
 
-# Canonical local ports for THIS project only.
-# Do not use 54321/54322 — those belong to other local VDB stacks (e.g. vdb-digital-mobile-local).
+# Canonical local ports for THIS project only (PARTNER_CLIENT).
+# Sibling stacks (do not touch from this repo):
+#   VDB Digital 2.0 (CANONICAL_BACKEND_OWNER): 54321–54324, analytics 54327
+#   VDB Digital Mobile (MOBILE_CLIENT):         54521–54524
+# Do not stop sibling Docker projects from this repository.
 #
 #   API / Kong:  http://127.0.0.1:54421
 #   Database:    postgresql://postgres:postgres@127.0.0.1:54422/postgres
 #   Studio:      http://127.0.0.1:54423
 #   Mailpit:     http://127.0.0.1:54424
+#   Analytics:   http://127.0.0.1:54427
 #
 [api]
 enabled = true
@@ -27,6 +31,11 @@ port = 54423
 [local_smtp]
 enabled = true
 port = 54424
+
+[analytics]
+enabled = true
+port = 54427
+backend = "postgres"
 
 [auth]
 enabled = true

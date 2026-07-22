@@ -1,5 +1,7 @@
 # Local development
 
+`REPOSITORY_ROLE=PARTNER_CLIENT`. Local Supabase is **fully isolated**. Staging/production will share one VDB backend — see `docs/shared-backend-architecture.md`.
+
 ## Prerequisites
 
 - Node 20+
@@ -17,6 +19,13 @@ npx supabase status
 
 Copy keys from `npx supabase status` into `.env.local`. A reference `.env.local` for this machine should target **only** the `vdb-partners` ports below.
 
+## Sibling isolation (mandatory)
+
+- Only manage containers named `supabase_*_vdb-partners`.
+- Never `docker stop` / `rm` stacks for `vdbdigital2`, mobile, or other VDB projects.
+- Never run destructive Docker wildcards from this repo.
+- On conflict: report; stop only this project (`npx supabase stop` inside `vdb-partners`).
+
 ## Canonical local ports (`vdb-partners`)
 
 | Service | URL / connection |
@@ -25,10 +34,11 @@ Copy keys from `npx supabase status` into `.env.local`. A reference `.env.local`
 | Database | `postgresql://postgres:postgres@127.0.0.1:54422/postgres` |
 | Studio | `http://127.0.0.1:54423` |
 | Mailpit | `http://127.0.0.1:54424` |
+| Analytics | `http://127.0.0.1:54427` |
 
 These values are defined in `supabase/config.toml` and must match `.env.local`.
 
-**Do not use `54321` / `54322` / `54323` for this project.** Those defaults belong to other local stacks (for example `vdb-digital-mobile-local`). Mixing them causes tests and the app to hit the wrong database.
+**Do not use `54321`–`54324` (VDB Digital 2.0) or `54521`–`54524` (Mobile).** Mixing them causes tests and the app to hit the wrong database. Isolation pass: `docs/partner-local-isolation-pass.md`.
 
 ### Port conflict history (resolved)
 

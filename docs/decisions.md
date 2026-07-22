@@ -21,6 +21,7 @@
 
 - Next.js 16 App Router + Supabase (no Prisma).
 - Local Supabase ports offset to `54421+` to avoid collisions with other VDB local stacks (**Configurabel**).
+- Multi-repo freeze: this repo is `PARTNER_CLIENT`; VDB Digital 2.0 is `CANONICAL_BACKEND_OWNER`; local isolated, staging/production shared (`docs/shared-backend-architecture.md`).
 - Catch-all seller/admin section routes for maintainable navigation; URLs still match `/dashboard/...` and `/admin/...`.
 - Identity verification uses a replaceable provider interface; local mock allowed; production requires real provider or manual review.
 - Env validation is lazy so `next build` works without production secrets; enforce with `VERCEL_ENV=production` or `FORCE_ENV_VALIDATION=true`.
