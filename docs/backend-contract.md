@@ -7,13 +7,16 @@ Versioned contract between **VDB Digital 2.0** (publisher) and clients (Mobile, 
 | Field | Value |
 |-------|-------|
 | `REPOSITORY_ROLE` | `PARTNER_CLIENT` |
-| Contract package | `vdb-backend-contract@0.1.0` |
-| `schemaVersion` | `2026.07.22.freeze` |
-| Env pin | `BACKEND_CONTRACT_VERSION=vdb-backend-contract@0.1.0` |
+| Contract package | `vdb-backend-contract@0.2.0-rc.2` |
+| `schemaVersion` | `2026.07.24.mobile-compat-rc2` |
+| Partner surface compatibility | Embeds non-breaking `0.2.0-rc.1` partner RPCs/tables |
+| Env pin | `BACKEND_CONTRACT_VERSION=vdb-backend-contract@0.2.0-rc.2` |
 | Source of generated types (target) | Canonical backend package / export from VDB Digital 2.0 |
 | Source of types (today) | Local `supabase/migrations/*` in this repo (proposal + local proof only) |
 
 Local migrations under `supabase/migrations` prove Partner behaviour in isolation. Shared staging/production must use the canonical schema published by VDB Digital 2.0 at the same `schemaVersion`.
+
+**Do not publish Mobile `0.1.1` or historical owner `0.1.0` as the shared staging pin.**
 
 ## Required contract contents (target)
 
