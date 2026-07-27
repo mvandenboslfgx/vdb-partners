@@ -63,26 +63,32 @@ export async function loadPartnerDashboardSummary(
     };
   }
 
-  const [codeResult, leads, sales, commissions, summary] = await Promise.all([
-    supabase
-      .from("partner_codes")
-      .select("code_display")
-      .eq("partner_id", partner.id)
-      .eq("status", "ACTIVE")
-      .limit(1)
-      .maybeSingle(),
-    countForPartner("partner_leads", partner.id),
-    countForPartner("partner_sales", partner.id),
-    countForPartner("partner_commissions", partner.id),
-    supabase.rpc("partner_financial_summary", { p_partner_id: partner.id }),
-  ]);
+  const [codeResult, leads, sales, commissions, summary, liability] =
+    await Promise.all([
+      supabase
+        .from("partner_codes")
+        .select("code_display")
+        .eq("partner_id", partner.id)
+        .eq("status", "ACTIVE")
+        .limit(1)
+        .maybeSingle(),
+      countForPartner("partner_leads", partner.id),
+      countForPartner("partner_sales", partner.id),
+      countForPartner("partner_commissions", partner.id),
+      supabase.rpc("partner_financial_summary", { p_partner_id: partner.id }),
+      supabase.rpc("partner_available_liability_cents", {
+        p_partner_id: partner.id,
+      }),
+    ]);
 
   const availableCents =
     Array.isArray(summary.data) &&
     summary.data[0] &&
     typeof summary.data[0].available_cents === "number"
       ? summary.data[0].available_cents
-      : null;
+      : typeof liability.data === "number"
+        ? liability.data
+        : null;
 
   return {
     partnerId: partner.id,

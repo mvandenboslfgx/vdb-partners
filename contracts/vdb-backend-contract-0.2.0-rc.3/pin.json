@@ -1,0 +1,13 @@
+{
+  "contractVersion": "vdb-backend-contract@0.2.0-rc.3",
+  "schemaVersion": "2026.07.25.messaging-support-appointments-rc3",
+  "priorCompatiblePins": [
+    "vdb-backend-contract@0.2.0-rc.2",
+    "2026.07.27.financial-concurrency-rc2"
+  ],
+  "schemaPinNote": "Additive messaging/support/appointments on RC2; retains partner_* financial surfaces and concurrency error codes.",
+  "stagingProjectRef": "qzekuvmgfekzsowdecyk",
+  "productionProjectRefDenylist": ["nhsrdnjfsxfikfbdmdfj"],
+  "repositoryRole": "PARTNER_CLIENT",
+  "bundleSha256": "62bb1c31240f5eb7e16968a6a03d425e52f2c2ef8b09c38c6cbd549ed331973f"
+}

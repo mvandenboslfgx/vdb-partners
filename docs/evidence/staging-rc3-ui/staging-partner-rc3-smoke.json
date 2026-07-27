@@ -1,0 +1,349 @@
+{
+  "generatedAt": "2026-07-27T22:01:12.708Z",
+  "contract": "vdb-backend-contract@0.2.0-rc.3",
+  "schema": "2026.07.25.messaging-support-appointments-rc3",
+  "staging": "qzekuvmgfekzsowdecyk",
+  "productionDenylist": "nhsrdnjfsxfikfbdmdfj",
+  "fixtures": {
+    "conversation_id": "13eef477-68a3-4c08-98a1-1504311872b6",
+    "ticket_id": "5ee3d66a-9ab3-4d80-8137-349d3ce7cdad",
+    "internal_reply_id": "22fece85-c683-43d9-bc93-393aeaa90aa3",
+    "public_reply_id": "41d178d3-c3d4-4266-9558-6bc3ae4c113b",
+    "appointment_id": "5e98d023-afd0-4ec2-abee-92c19d306d85",
+    "attachment_id": "3e317fd5-b7d5-4d30-b3f9-2ba73bd8bad5",
+    "message_public_cust_id": "1f1e607b-80be-43b0-b479-35c0556c2df4"
+  },
+  "results": [
+    {
+      "name": "runtime_url_is_staging",
+      "ok": true,
+      "host": "qzekuvmgfekzsowdecyk.supabase.co"
+    },
+    {
+      "name": "contract_pin_rc3",
+      "ok": true
+    },
+    {
+      "name": "schema_pin_rc3",
+      "ok": true
+    },
+    {
+      "name": "production_denylist",
+      "ok": true
+    },
+    {
+      "name": "anon_portal_conversations_denied_or_empty",
+      "ok": true,
+      "status": 401,
+      "count": null
+    },
+    {
+      "name": "login_partner_a",
+      "ok": true,
+      "email": "staging+part_a@example.test"
+    },
+    {
+      "name": "route_partner_a",
+      "ok": true,
+      "primaryRole": "partner",
+      "destination": "/dashboard",
+      "reason": "partner_dashboard"
+    },
+    {
+      "name": "partner_a_routes_dashboard",
+      "ok": true,
+      "destination": "/dashboard"
+    },
+    {
+      "name": "partner_a_commissions_query",
+      "ok": true,
+      "status": 200,
+      "count": 1
+    },
+    {
+      "name": "partner_a_leads_query",
+      "ok": true,
+      "status": 200,
+      "count": 1
+    },
+    {
+      "name": "partner_a_sales_query",
+      "ok": true,
+      "status": 200,
+      "count": 1
+    },
+    {
+      "name": "partner_a_payouts_query",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_ledger_status",
+      "ok": true,
+      "liabilityStatus": 200,
+      "ledgerStatus": 200,
+      "liabilityCents": 7500,
+      "ledgerCount": 1,
+      "note": "partner_financial_summary skipped (owner RPC ambiguous partner_id)"
+    },
+    {
+      "name": "partner_a_conversations_empty_or_ok",
+      "ok": true,
+      "status": 200,
+      "count": 0,
+      "note": "EmptyState allowed"
+    },
+    {
+      "name": "partner_a_denied_customer_conversation",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_denied_customer_message",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_denied_customer_attachment",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_denied_customer_ticket",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_no_internal_support_reply",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_denied_customer_appointment",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_booking_fail_closed",
+      "ok": true,
+      "status": 400,
+      "note": "FEATURE_DISABLED"
+    },
+    {
+      "name": "login_partner_b",
+      "ok": true,
+      "email": "staging+part_b@example.test"
+    },
+    {
+      "name": "route_partner_b",
+      "ok": true,
+      "primaryRole": "partner",
+      "destination": "/dashboard",
+      "reason": "partner_dashboard"
+    },
+    {
+      "name": "partner_b_routes_dashboard",
+      "ok": true,
+      "destination": "/dashboard"
+    },
+    {
+      "name": "partner_b_commissions_query",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_leads_query",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_sales_query",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_payouts_query",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_ledger_status",
+      "ok": true,
+      "liabilityStatus": 200,
+      "ledgerStatus": 200,
+      "liabilityCents": 0,
+      "ledgerCount": 0,
+      "note": "partner_financial_summary skipped (owner RPC ambiguous partner_id)"
+    },
+    {
+      "name": "partner_b_conversations_empty_or_ok",
+      "ok": true,
+      "status": 200,
+      "count": 0,
+      "note": "EmptyState allowed"
+    },
+    {
+      "name": "partner_b_denied_customer_conversation",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_denied_customer_message",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_denied_customer_attachment",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_denied_customer_ticket",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_no_internal_support_reply",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_denied_customer_appointment",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_booking_fail_closed",
+      "ok": true,
+      "status": 400,
+      "note": "FEATURE_DISABLED"
+    },
+    {
+      "name": "partner_b_denied_partner_a_lead",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "login_partner_pending",
+      "ok": true,
+      "email": "staging+part_pending@example.test"
+    },
+    {
+      "name": "route_partner_pending",
+      "ok": true,
+      "primaryRole": "partner_pending",
+      "destination": "/onboarding",
+      "reason": "partner_pending"
+    },
+    {
+      "name": "pending_routes_onboarding",
+      "ok": true,
+      "destination": "/onboarding"
+    },
+    {
+      "name": "login_customer",
+      "ok": true,
+      "email": "staging+cust_a@example.test"
+    },
+    {
+      "name": "route_customer",
+      "ok": true,
+      "primaryRole": "customer",
+      "destination": "/geen-toegang?reden=klant",
+      "reason": "customer_denied"
+    },
+    {
+      "name": "customer_denied_partner_dashboard",
+      "ok": true,
+      "destination": "/geen-toegang?reden=klant"
+    },
+    {
+      "name": "customer_partner_leads_forbidden_or_empty",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "login_staff",
+      "ok": true,
+      "email": "staging+staff_s@example.test"
+    },
+    {
+      "name": "route_staff",
+      "ok": true,
+      "primaryRole": "staff",
+      "destination": "/admin",
+      "reason": "admin"
+    },
+    {
+      "name": "staff_routes_admin",
+      "ok": true,
+      "destination": "/admin",
+      "primaryRole": "staff"
+    },
+    {
+      "name": "login_admin",
+      "ok": true,
+      "email": "staging+admin_a@example.test"
+    },
+    {
+      "name": "route_admin",
+      "ok": true,
+      "primaryRole": "admin",
+      "destination": "/admin",
+      "reason": "admin"
+    },
+    {
+      "name": "admin_routes_admin",
+      "ok": true,
+      "destination": "/admin",
+      "primaryRole": "admin"
+    },
+    {
+      "name": "login_owner",
+      "ok": true,
+      "email": "staging+owner_o@example.test"
+    },
+    {
+      "name": "route_owner",
+      "ok": true,
+      "primaryRole": "owner",
+      "destination": "/admin",
+      "reason": "admin"
+    },
+    {
+      "name": "owner_routes_admin",
+      "ok": true,
+      "destination": "/admin",
+      "primaryRole": "owner"
+    },
+    {
+      "name": "rc3_fail_closed_flags",
+      "ok": true,
+      "enabled": []
+    }
+  ],
+  "summary": {
+    "total": 55,
+    "pass": 55,
+    "fail": 0
+  }
+}

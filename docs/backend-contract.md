@@ -4,15 +4,15 @@ Versioned contract between **VDB Digital 2.0** (publisher) and clients (Mobile, 
 
 ## Contract identity (this repo)
 
-| Field | Value |
-|-------|-------|
-| `REPOSITORY_ROLE` | `PARTNER_CLIENT` |
-| Contract package | `vdb-backend-contract@0.2.0-rc.2` |
-| `schemaVersion` | `2026.07.27.financial-concurrency-rc2` |
-| Partner surface compatibility | Embeds non-breaking `0.2.0-rc.1` partner RPCs/tables |
-| Env pin | `BACKEND_CONTRACT_VERSION=vdb-backend-contract@0.2.0-rc.2` |
-| Source of generated types (target) | Canonical backend package / export from VDB Digital 2.0 |
-| Source of types (today) | Local `supabase/migrations/*` in this repo (proposal + local proof only) |
+| Field                              | Value                                                                            |
+| ---------------------------------- | -------------------------------------------------------------------------------- |
+| `REPOSITORY_ROLE`                  | `PARTNER_CLIENT`                                                                 |
+| Contract package                   | `vdb-backend-contract@0.2.0-rc.3`                                                |
+| `schemaVersion`                    | `2026.07.25.messaging-support-appointments-rc3`                                  |
+| Partner surface compatibility      | Embeds non-breaking `0.2.0-rc.1` partner RPCs/tables + RC2 financial concurrency |
+| Env pin                            | `BACKEND_CONTRACT_VERSION=vdb-backend-contract@0.2.0-rc.3`                       |
+| Source of generated types (target) | Canonical backend package / export from VDB Digital 2.0                          |
+| Source of types (today)            | Local `supabase/migrations/*` in this repo (proposal + local proof only)         |
 
 Local migrations under `supabase/migrations` prove Partner behaviour in isolation. Shared staging/production must use the canonical schema published by VDB Digital 2.0 at the same `schemaVersion`.
 
@@ -28,37 +28,50 @@ Local migrations under `supabase/migrations` prove Partner behaviour in isolatio
 6. Stable error codes
 7. `schemaVersion` string
 
-## Role mapping (Owner RC2 — runtime)
+## Role mapping (Owner RC3 — runtime, same as RC2 auth)
 
-| Shared role | Owner encoding | Partner Portal route |
-|-------------|----------------|----------------------|
-| `owner` | `admin_roles.role=OWNER` | `/admin` |
-| `admin` | `admin_roles.role=ADMIN` | `/admin` |
-| `staff` | `admin_roles.role=SUPPORT\|CONTENT` | `/admin` |
-| `partner` | `partner_profiles.status=ACTIVE` | `/dashboard` |
-| `partner_pending` | `partner_profiles.status=PENDING` | `/onboarding` |
-| `customer` | `organization_members` | `/geen-toegang?reden=klant` |
+| Shared role       | Owner encoding                      | Partner Portal route        |
+| ----------------- | ----------------------------------- | --------------------------- |
+| `owner`           | `admin_roles.role=OWNER`            | `/admin`                    |
+| `admin`           | `admin_roles.role=ADMIN`            | `/admin`                    |
+| `staff`           | `admin_roles.role=SUPPORT\|CONTENT` | `/admin`                    |
+| `partner`         | `partner_profiles.status=ACTIVE`    | `/dashboard`                |
+| `partner_pending` | `partner_profiles.status=PENDING`   | `/onboarding`               |
+| `customer`        | `organization_members`              | `/geen-toegang?reden=klant` |
 
 **Runtime auth/routing must not query local `user_roles` or `seller_profiles`.** Those remain local proposal tables for isolated Docker proofs only.
 
-## Domain object mapping (local proposal → Owner RC2)
+## RC3 portal surfaces (shared `portal_*` — no parallel partner domain)
 
-| Local table / concept | Shared domain |
-|-----------------------|---------------|
-| `seller_profiles` (legacy local) | `partner_profiles` |
-| seller applications / pending | `partner_applications` + `partner_profiles.status=PENDING` |
-| `orders` attributed to seller | `partner_sales` |
-| `commissions` | `partner_commissions` |
-| `payouts` / `cash_receipts` | `partner_payouts` / `partner_cash_receipts` |
-| `marketing_assets` | marketing assets |
-| `customers` | customers (VDB payee) |
+| Logical / Mobile name | Owner table                  |
+| --------------------- | ---------------------------- |
+| conversations         | `portal_conversations`       |
+| messages              | `portal_messages`            |
+| message_attachments   | `portal_message_attachments` |
+| support_tickets       | `portal_support_tickets`     |
+| support_messages      | `portal_support_replies`     |
+| appointments          | `portal_appointments`        |
+
+Fail-closed flags (default false): `mollie_checkout`, `digital_product_checkout`, `partner_payouts`, `messaging_realtime`, `support_internal_notes_rpc`, `appointments_booking`.
+
+## Domain object mapping (local proposal → Owner RC3)
+
+| Local table / concept            | Shared domain                                              |
+| -------------------------------- | ---------------------------------------------------------- |
+| `seller_profiles` (legacy local) | `partner_profiles`                                         |
+| seller applications / pending    | `partner_applications` + `partner_profiles.status=PENDING` |
+| `orders` attributed to seller    | `partner_sales`                                            |
+| `commissions`                    | `partner_commissions`                                      |
+| `payouts` / `cash_receipts`      | `partner_payouts` / `partner_cash_receipts`                |
+| `marketing_assets`               | marketing assets                                           |
+| `customers`                      | customers (VDB payee)                                      |
 
 There must not be separate “mobile commissions” and “affiliate commissions.” See `docs/financial-single-source-of-truth.md`.
 
 Concurrency error codes (schema `2026.07.27.financial-concurrency-rc2`):
 
-* `PARTNER_LEAD_ALREADY_CONVERTED`
-* `PARTNER_INSUFFICIENT_LIABILITY`
+- `PARTNER_LEAD_ALREADY_CONVERTED`
+- `PARTNER_INSUFFICIENT_LIABILITY`
 
 ## Drift check (planned)
 

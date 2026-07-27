@@ -12,6 +12,16 @@ import {
   loadPartnerPayouts,
   loadPartnerSales,
 } from "@/lib/partners/loaders";
+import {
+  loadConversationMessages,
+  loadConversationReadState,
+  loadMessageAttachments,
+  loadPartnerAppointments,
+  loadPartnerConversations,
+  loadPartnerSupportTickets,
+  loadPublicSupportReplies,
+} from "@/lib/partners/rc3-loaders";
+import { loadFailClosedFlags } from "@/lib/contract/flags";
 
 const titles: Record<string, [string, string]> = {
   profile: ["Mijn profiel", "Houd uw bedrijfs- en contactgegevens actueel."],
@@ -43,7 +53,18 @@ const titles: Record<string, [string, string]> = {
     "Meldingen",
     "Belangrijke updates over uw account en verkopen.",
   ],
-  support: ["Support", "Neem contact op met VDB Partner Support."],
+  support: [
+    "Support",
+    "Supporttickets en publieke antwoorden (Owner portal_support_*).",
+  ],
+  conversations: [
+    "Gesprekken",
+    "Deelnemer-gebonden gesprekken via portal_conversations.",
+  ],
+  appointments: [
+    "Afspraken",
+    "Afspraken via portal_appointments. Boeken is fail-closed tot de flag aan staat.",
+  ],
   settings: ["Instellingen", "Beheer uw portal- en notificatievoorkeuren."],
 };
 
@@ -388,6 +409,253 @@ export default async function SellerPage({
             </div>
           </dl>
         </Card>
+      </>
+    );
+  }
+
+  if (slug === "conversations") {
+    const conversationId = section[1];
+    if (conversationId) {
+      const [messages, readState] = await Promise.all([
+        loadConversationMessages(conversationId),
+        loadConversationReadState(conversationId, profile.id),
+      ]);
+      const firstMessageId = messages[0]?.id;
+      const attachments = firstMessageId
+        ? await loadMessageAttachments(firstMessageId)
+        : [];
+      return (
+        <>
+          <PageHeader
+            title="Gesprek"
+            description={`ID ${conversationId.slice(0, 8)}…`}
+          />
+          <p
+            className="text-muted mb-4 text-sm"
+            data-testid="conversation-read-state"
+          >
+            Laatst gelezen: {readState?.last_read_at ?? "—"}
+          </p>
+          {messages.length ? (
+            <Card className="space-y-4 p-6">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className="border-border/50 border-b pb-3 text-sm"
+                >
+                  <p>{message.body}</p>
+                  <p className="text-muted mt-1 text-xs">
+                    {new Date(message.created_at).toLocaleString("nl-NL")}
+                  </p>
+                </div>
+              ))}
+              {attachments.length > 0 && (
+                <p
+                  className="text-muted text-xs"
+                  data-testid="message-attachments"
+                >
+                  Bijlagen: {attachments.length}
+                </p>
+              )}
+            </Card>
+          ) : (
+            <EmptyState
+              title="Geen berichten"
+              description="Geen publieke berichten zichtbaar voor dit gesprek, of u bent geen deelnemer."
+            />
+          )}
+        </>
+      );
+    }
+    const conversations = await loadPartnerConversations();
+    return (
+      <>
+        <PageHeader title={title} description={description} />
+        {conversations.length ? (
+          <Card className="p-6">
+            <Table>
+              <thead>
+                <tr className="text-muted border-b text-xs">
+                  <th className="pb-3">Onderwerp</th>
+                  <th className="pb-3">Status</th>
+                  <th className="pb-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {conversations.map((conversation) => (
+                  <tr
+                    key={conversation.id}
+                    className="border-border/50 border-b"
+                  >
+                    <td className="py-4">{conversation.subject}</td>
+                    <td className="py-4">
+                      <StatusBadge
+                        status={String(conversation.status).toLowerCase()}
+                      />
+                    </td>
+                    <td className="py-4">
+                      <Link
+                        className="text-gold"
+                        href={`/dashboard/conversations/${conversation.id}`}
+                      >
+                        Openen
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Card>
+        ) : (
+          <EmptyState
+            title="Nog geen gesprekken"
+            description="Gesprekken verschijnen alleen wanneer u deelnemer bent (Owner portal_conversations)."
+          />
+        )}
+      </>
+    );
+  }
+
+  if (slug === "support") {
+    const ticketId = section[1];
+    if (ticketId) {
+      const replies = await loadPublicSupportReplies(ticketId);
+      return (
+        <>
+          <PageHeader
+            title="Supportticket"
+            description={`ID ${ticketId.slice(0, 8)}…`}
+          />
+          {replies.length ? (
+            <Card
+              className="space-y-4 p-6"
+              data-testid="public-support-replies"
+            >
+              {replies.map((reply) => (
+                <div
+                  key={reply.id}
+                  className="border-border/50 border-b pb-3 text-sm"
+                >
+                  <p>{reply.body}</p>
+                  <p className="text-muted mt-1 text-xs">
+                    {new Date(reply.created_at).toLocaleString("nl-NL")} ·
+                    publiek
+                  </p>
+                </div>
+              ))}
+            </Card>
+          ) : (
+            <EmptyState
+              title="Geen publieke antwoorden"
+              description="Interne supportantwoorden blijven verborgen voor partners."
+            />
+          )}
+        </>
+      );
+    }
+    const tickets = await loadPartnerSupportTickets();
+    return (
+      <>
+        <PageHeader title={title} description={description} />
+        {tickets.length ? (
+          <Card className="p-6">
+            <Table>
+              <thead>
+                <tr className="text-muted border-b text-xs">
+                  <th className="pb-3">Categorie</th>
+                  <th className="pb-3">Status</th>
+                  <th className="pb-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tickets.map((ticket) => (
+                  <tr key={ticket.id} className="border-border/50 border-b">
+                    <td className="py-4">{ticket.category}</td>
+                    <td className="py-4">
+                      <StatusBadge
+                        status={String(ticket.status).toLowerCase()}
+                      />
+                    </td>
+                    <td className="py-4">
+                      <Link
+                        className="text-gold"
+                        href={`/dashboard/support/${ticket.id}`}
+                      >
+                        Openen
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Card>
+        ) : (
+          <EmptyState
+            title="Nog geen supporttickets"
+            description="Tickets verschijnen hier wanneer ze aan uw account zijn gekoppeld."
+          />
+        )}
+      </>
+    );
+  }
+
+  if (slug === "appointments") {
+    const flags = await loadFailClosedFlags();
+    const appointments = await loadPartnerAppointments();
+    return (
+      <>
+        <PageHeader title={title} description={description} />
+        <Card
+          className="mb-6 p-5 text-sm text-[#e5d3b0]"
+          data-testid="appointments-booking-flag"
+        >
+          Boeken/herplannen/annuleren via RPC:{" "}
+          {flags.appointments_booking
+            ? "ingeschakeld"
+            : "fail-closed (appointments_booking=false)"}
+        </Card>
+        {appointments.length ? (
+          <Card className="p-6">
+            <Table>
+              <thead>
+                <tr className="text-muted border-b text-xs">
+                  <th className="pb-3">Afspraak</th>
+                  <th className="pb-3">Status</th>
+                  <th className="pb-3">Start</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments.map((appointment) => (
+                  <tr
+                    key={appointment.id}
+                    className="border-border/50 border-b"
+                  >
+                    <td className="py-4 font-mono text-xs">
+                      {appointment.id.slice(0, 8)}
+                    </td>
+                    <td className="py-4">
+                      <StatusBadge
+                        status={String(appointment.status).toLowerCase()}
+                      />
+                    </td>
+                    <td className="text-muted py-4">
+                      {appointment.starts_at
+                        ? new Date(appointment.starts_at).toLocaleString(
+                            "nl-NL",
+                          )
+                        : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Card>
+        ) : (
+          <EmptyState
+            title="Nog geen afspraken"
+            description="Afspraken verschijnen alleen bij deelname. Nieuwe bookings blijven fail-closed tot Owner de flag zet."
+          />
+        )}
       </>
     );
   }

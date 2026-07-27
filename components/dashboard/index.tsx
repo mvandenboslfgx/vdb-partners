@@ -10,9 +10,10 @@ export const sellerLinks = [
   ["Verkopen", "/dashboard/sales"],
   ["Commissies", "/dashboard/commissions"],
   ["Uitbetalingen", "/dashboard/payouts"],
-  ["Producten", "/dashboard/products"],
-  ["Marketing", "/dashboard/marketing"],
+  ["Gesprekken", "/dashboard/conversations"],
   ["Support", "/dashboard/support"],
+  ["Afspraken", "/dashboard/appointments"],
+  ["Producten", "/dashboard/products"],
   ["Instellingen", "/dashboard/settings"],
 ];
 export const adminLinks = [
