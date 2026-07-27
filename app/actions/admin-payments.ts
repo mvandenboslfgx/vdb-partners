@@ -5,7 +5,7 @@ import { isFeatureEnabled } from "@/lib/feature-flags";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function confirmManualBankPayment(paymentId: string) {
-  const actor = await requireRole("owner", "finance_admin");
+  const actor = await requireRole("owner", "admin");
   const db = createAdminClient();
   const { data: payment, error } = await db.from("payments").select("id, order_id, status, provider").eq("id", paymentId).eq("provider", "bank_transfer").single();
   if (error) throw error;
@@ -22,7 +22,7 @@ export async function confirmManualBankPayment(paymentId: string) {
 export const verifyManualPayment = confirmManualBankPayment;
 
 export async function createMolliePaymentLink(orderId: string) {
-  const actor = await requireRole("owner", "finance_admin");
+  const actor = await requireRole("owner", "admin");
   if (!(await isFeatureEnabled("mollie_payments_enabled"))) throw new Error("Mollie payments are disabled");
   const env = getEnv();
   if (!env.MOLLIE_API_KEY) throw new Error("Mollie is enabled but MOLLIE_API_KEY is missing");

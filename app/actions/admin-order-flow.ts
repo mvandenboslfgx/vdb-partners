@@ -11,7 +11,7 @@ import {
 } from "@/lib/workflows/finance";
 
 export async function completeLocalOrderSettlement(orderId: string) {
-  const actor = await requireRole("owner", "finance_admin");
+  const actor = await requireRole("owner", "admin");
   await advanceOrderToAwaitingPayment(actor.id, orderId);
   await createAndConfirmManualBankPayment(actor.id, orderId);
   await confirmOrderDelivered(actor.id, orderId, `LOCAL-${orderId.slice(0, 8)}`);

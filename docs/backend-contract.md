@@ -8,7 +8,7 @@ Versioned contract between **VDB Digital 2.0** (publisher) and clients (Mobile, 
 |-------|-------|
 | `REPOSITORY_ROLE` | `PARTNER_CLIENT` |
 | Contract package | `vdb-backend-contract@0.2.0-rc.2` |
-| `schemaVersion` | `2026.07.24.mobile-compat-rc2` |
+| `schemaVersion` | `2026.07.27.financial-concurrency-rc2` |
 | Partner surface compatibility | Embeds non-breaking `0.2.0-rc.1` partner RPCs/tables |
 | Env pin | `BACKEND_CONTRACT_VERSION=vdb-backend-contract@0.2.0-rc.2` |
 | Source of generated types (target) | Canonical backend package / export from VDB Digital 2.0 |
@@ -28,32 +28,37 @@ Local migrations under `supabase/migrations` prove Partner behaviour in isolatio
 6. Stable error codes
 7. `schemaVersion` string
 
-## Role mapping (local portal â†’ target shared)
+## Role mapping (Owner RC2 — runtime)
 
-| Local (current Partner Portal) | Target shared platform | Notes |
-|--------------------------------|------------------------|-------|
-| `seller` + `draft` / `pending_review` | `partner_pending` | Status may remain on profile |
-| `seller` + `approved` | `partner` | |
-| `sales_admin` / `support_admin` / `finance_admin` | `staff` (+ capability flags) or dedicated staff roles | Exact split owned by canonical backend |
-| `owner` | `owner` | |
-| (website) `customer` | `customer` | Not a Partner Portal login role today |
-| (website) `admin` | `admin` | Canonical naming TBD |
+| Shared role | Owner encoding | Partner Portal route |
+|-------------|----------------|----------------------|
+| `owner` | `admin_roles.role=OWNER` | `/admin` |
+| `admin` | `admin_roles.role=ADMIN` | `/admin` |
+| `staff` | `admin_roles.role=SUPPORT\|CONTENT` | `/admin` |
+| `partner` | `partner_profiles.status=ACTIVE` | `/dashboard` |
+| `partner_pending` | `partner_profiles.status=PENDING` | `/onboarding` |
+| `customer` | `organization_members` | `/geen-toegang?reden=klant` |
 
-**Do not invent a second Auth.** Mapping is a contract migration task owned by VDB Digital 2.0.
+**Runtime auth/routing must not query local `user_roles` or `seller_profiles`.** Those remain local proposal tables for isolated Docker proofs only.
 
-## Domain object mapping (local â†’ shared intent)
+## Domain object mapping (local proposal → Owner RC2)
 
 | Local table / concept | Shared domain |
 |-----------------------|---------------|
-| `seller_profiles` | partner profiles |
-| seller applications / pending | partner applications |
-| `orders` attributed to seller | sales / partner-attributed orders |
-| `commissions` | commissions (one ledger) |
-| `payouts` / `cash_receipts` | payouts |
+| `seller_profiles` (legacy local) | `partner_profiles` |
+| seller applications / pending | `partner_applications` + `partner_profiles.status=PENDING` |
+| `orders` attributed to seller | `partner_sales` |
+| `commissions` | `partner_commissions` |
+| `payouts` / `cash_receipts` | `partner_payouts` / `partner_cash_receipts` |
 | `marketing_assets` | marketing assets |
 | `customers` | customers (VDB payee) |
 
-There must not be separate â€œmobile commissionsâ€ and â€œaffiliate commissions.â€ See `docs/financial-single-source-of-truth.md`.
+There must not be separate “mobile commissions” and “affiliate commissions.” See `docs/financial-single-source-of-truth.md`.
+
+Concurrency error codes (schema `2026.07.27.financial-concurrency-rc2`):
+
+* `PARTNER_LEAD_ALREADY_CONVERTED`
+* `PARTNER_INSUFFICIENT_LIABILITY`
 
 ## Drift check (planned)
 

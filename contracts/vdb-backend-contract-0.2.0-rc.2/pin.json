@@ -1,0 +1,9 @@
+{
+  "contractVersion": "vdb-backend-contract@0.2.0-rc.2",
+  "schemaVersion": "2026.07.27.financial-concurrency-rc2",
+  "bundleSchemaVersion": "2026.07.24.mobile-compat-rc2",
+  "schemaPinNote": "Consumer pin includes financial-concurrency RC2 delta (PARTNER_LEAD_ALREADY_CONVERTED, PARTNER_INSUFFICIENT_LIABILITY).",
+  "stagingProjectRef": "qzekuvmgfekzsowdecyk",
+  "productionProjectRefDenylist": ["nhsrdnjfsxfikfbdmdfj"],
+  "repositoryRole": "PARTNER_CLIENT"
+}

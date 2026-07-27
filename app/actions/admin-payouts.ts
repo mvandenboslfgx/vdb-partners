@@ -2,6 +2,7 @@
 
 import { appendAuditLog } from "@/lib/audit/log";
 import { requirePermission, AuthorizationError } from "@/lib/auth/require-auth";
+import { assertLocalLegacySellerDomainAllowed } from "@/lib/contract/local-legacy";
 import { generateCashReceiptPdf } from "@/lib/documents/pdf";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
@@ -27,10 +28,16 @@ export async function createPayoutBatch(input: {
   commissionIds: string[];
 }) {
   const actor = await requireFinanceActor();
-  if (input.method === "cash" && !(await isFeatureEnabled("cash_payouts_enabled"))) {
+  if (
+    input.method === "cash" &&
+    !(await isFeatureEnabled("cash_payouts_enabled"))
+  ) {
     throw new Error("Contante uitbetalingen zijn niet geactiveerd.");
   }
-  if (input.method === "bank_transfer" && !(await isFeatureEnabled("bank_payouts_enabled"))) {
+  if (
+    input.method === "bank_transfer" &&
+    !(await isFeatureEnabled("bank_payouts_enabled"))
+  ) {
     throw new Error("Bankuitbetalingen zijn niet geactiveerd.");
   }
 
@@ -59,8 +66,11 @@ export async function createPayoutBatch(input: {
 
   const activeIds = (activeItems ?? [])
     .filter((row) => {
-      const payoutRelation = row.payouts as { status?: string } | { status?: string }[] | null;
-      const status = Array.isArray(payoutRelation) ? payoutRelation[0]?.status : payoutRelation?.status;
+      const payoutRelation = row.payouts as
+        { status?: string } | { status?: string }[] | null;
+      const status = Array.isArray(payoutRelation)
+        ? payoutRelation[0]?.status
+        : payoutRelation?.status;
       return status && !["cancelled", "reversed"].includes(status);
     })
     .map((row) => row.commission_id);
@@ -163,7 +173,8 @@ export async function registerBankPayout(input: {
     .eq("id", input.payoutId)
     .single();
   if (error) throw error;
-  if (payout.method !== "bank_transfer") throw new Error("Alleen bankuitbetalingen.");
+  if (payout.method !== "bank_transfer")
+    throw new Error("Alleen bankuitbetalingen.");
 
   const { data: updated, error: updateError } = await db
     .from("payouts")
@@ -182,7 +193,10 @@ export async function registerBankPayout(input: {
     (item: { commission_id: string }) => item.commission_id,
   );
   if (commissionIds.length) {
-    await db.from("commissions").update({ status: "paid", paid_at: new Date().toISOString() }).in("id", commissionIds);
+    await db
+      .from("commissions")
+      .update({ status: "paid", paid_at: new Date().toISOString() })
+      .in("id", commissionIds);
   }
 
   const transactionId = crypto.randomUUID();
@@ -215,7 +229,10 @@ export async function registerBankPayout(input: {
     action: "payout.bank.register",
     entityType: "payout",
     entityId: payout.id,
-    after: { reference: input.paymentReference, amount: payout.total_amount_cents },
+    after: {
+      reference: input.paymentReference,
+      amount: payout.total_amount_cents,
+    },
   });
 
   return updated;
@@ -231,9 +248,14 @@ export async function prepareCashPayoutAction(input: {
     throw new Error("Contante uitbetalingen zijn niet geactiveerd.");
   }
   const db = createAdminClient();
-  const { data: payout, error } = await db.from("payouts").select("*").eq("id", input.payoutId).single();
+  const { data: payout, error } = await db
+    .from("payouts")
+    .select("*")
+    .eq("id", input.payoutId)
+    .single();
   if (error) throw error;
-  if (payout.method !== "cash") throw new Error("Alleen contante uitbetalingen.");
+  if (payout.method !== "cash")
+    throw new Error("Alleen contante uitbetalingen.");
 
   const receiptNumber = `VDB-CASH-${Date.now()}`;
   const prepared = prepareCashPayout(
@@ -252,7 +274,10 @@ export async function prepareCashPayoutAction(input: {
 
   const { data: updated, error: updateError } = await db
     .from("payouts")
-    .update({ status: "awaiting_confirmation", payment_reference: receiptNumber })
+    .update({
+      status: "awaiting_confirmation",
+      payment_reference: receiptNumber,
+    })
     .eq("id", input.payoutId)
     .select()
     .single();
@@ -287,8 +312,13 @@ export async function confirmCashPayoutReceipt(input: {
   asOwnerOverride?: boolean;
   reason?: string;
 }) {
+  assertLocalLegacySellerDomainAllowed();
   const db = createAdminClient();
-  const { data: payout, error } = await db.from("payouts").select("*, seller_profiles(user_id)").eq("id", input.payoutId).single();
+  const { data: payout, error } = await db
+    .from("payouts")
+    .select("*, seller_profiles(user_id)")
+    .eq("id", input.payoutId)
+    .single();
   if (error) throw error;
 
   let actor;
@@ -302,12 +332,21 @@ export async function confirmCashPayoutReceipt(input: {
     const sellerUserId = Array.isArray(payout.seller_profiles)
       ? payout.seller_profiles[0]?.user_id
       : payout.seller_profiles?.user_id;
-    if (sellerUserId !== seller.id) throw new AuthorizationError("Alleen de verkoper mag ontvangst bevestigen.");
+    if (sellerUserId !== seller.id)
+      throw new AuthorizationError(
+        "Alleen de verkoper mag ontvangst bevestigen.",
+      );
     actor = seller;
   }
 
-  if (input.asOwnerOverride && actor.role !== "owner" && actor.role !== "finance_admin") {
-    throw new AuthorizationError("Alleen owner/finance mag handmatig bevestigen.");
+  if (
+    input.asOwnerOverride &&
+    actor.role !== "owner" &&
+    actor.role !== "admin"
+  ) {
+    throw new AuthorizationError(
+      "Alleen owner/finance mag handmatig bevestigen.",
+    );
   }
 
   confirmCashReceived(
@@ -332,22 +371,31 @@ export async function confirmCashPayoutReceipt(input: {
     .single();
   if (updateError) throw updateError;
 
-  const { data: items } = await db.from("payout_items").select("commission_id").eq("payout_id", input.payoutId);
+  const { data: items } = await db
+    .from("payout_items")
+    .select("commission_id")
+    .eq("payout_id", input.payoutId);
   const commissionIds = (items ?? []).map((i) => i.commission_id);
   if (commissionIds.length) {
-    await db.from("commissions").update({ status: "paid", paid_at: new Date().toISOString() }).in("id", commissionIds);
+    await db
+      .from("commissions")
+      .update({ status: "paid", paid_at: new Date().toISOString() })
+      .in("id", commissionIds);
   }
 
   let pdfBuffer: Buffer | null = null;
   try {
-    pdfBuffer = await generateCashReceiptPdf(payout.payment_reference ?? input.payoutId, [
-      "VDB Digital Software — Contante ontvangstbon",
-      `Verkoper: ${input.recipientName}`,
-      `Bedrag: ${(payout.total_amount_cents / 100).toFixed(2)} ${payout.currency}`,
-      `Datum: ${new Date().toISOString()}`,
-      "Klanten betalen altijd rechtstreeks aan VDB Digital Software.",
-      "Deze uitbetaling is VDB Digital Software → Verkoper.",
-    ]);
+    pdfBuffer = await generateCashReceiptPdf(
+      payout.payment_reference ?? input.payoutId,
+      [
+        "VDB Digital Software — Contante ontvangstbon",
+        `Verkoper: ${input.recipientName}`,
+        `Bedrag: ${(payout.total_amount_cents / 100).toFixed(2)} ${payout.currency}`,
+        `Datum: ${new Date().toISOString()}`,
+        "Klanten betalen altijd rechtstreeks aan VDB Digital Software.",
+        "Deze uitbetaling is VDB Digital Software → Verkoper.",
+      ],
+    );
   } catch {
     pdfBuffer = null;
   }
@@ -369,7 +417,11 @@ async function resolveLedgerAccount(
   db: ReturnType<typeof createAdminClient>,
   code: string,
 ): Promise<string> {
-  const { data } = await db.from("ledger_accounts").select("id").eq("code", code).maybeSingle();
+  const { data } = await db
+    .from("ledger_accounts")
+    .select("id")
+    .eq("code", code)
+    .maybeSingle();
   if (data?.id) return data.id;
   const { data: created, error } = await db
     .from("ledger_accounts")

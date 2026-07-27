@@ -1,10 +1,16 @@
 import { z } from "zod";
+import { assertNotProductionSupabaseUrl } from "@/lib/contract/env";
 
-const booleanFromEnv = z.enum(["true", "false"]).optional().transform((value) => value === "true");
+const booleanFromEnv = z
+  .enum(["true", "false"])
+  .optional()
+  .transform((value) => value === "true");
 const optionalUrl = z.string().url().optional();
 
 const schema = z.object({
-  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
   NEXT_PUBLIC_APP_URL: optionalUrl,
   NEXT_PUBLIC_MAIN_SITE_URL: optionalUrl,
   MAIN_SITE_URL: optionalUrl,
@@ -35,26 +41,53 @@ const schema = z.object({
 });
 
 export type Env = z.infer<typeof schema> & { MAIN_SITE_URL: string };
-const requiredInProduction = ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "SUPABASE_SERVICE_ROLE_KEY", "ENCRYPTION_KEY"] as const;
+const requiredInProduction = [
+  "NEXT_PUBLIC_SUPABASE_URL",
+  "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+  "SUPABASE_SERVICE_ROLE_KEY",
+  "ENCRYPTION_KEY",
+] as const;
 
 function shouldEnforce(env: z.infer<typeof schema>) {
-  return env.FORCE_ENV_VALIDATION || (env.NODE_ENV === "production" && process.env.VERCEL_ENV === "production");
+  return (
+    env.FORCE_ENV_VALIDATION ||
+    (env.NODE_ENV === "production" && process.env.VERCEL_ENV === "production")
+  );
 }
 
 /** Parses on use so `next build` can evaluate modules without deployment secrets. */
 export function getEnv(): Env {
   const parsed = schema.safeParse(process.env);
-  if (!parsed.success) throw new Error(`Invalid environment: ${parsed.error.message}`);
-  const env = { ...parsed.data, MAIN_SITE_URL: parsed.data.NEXT_PUBLIC_MAIN_SITE_URL ?? parsed.data.MAIN_SITE_URL ?? parsed.data.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000" };
+  if (!parsed.success)
+    throw new Error(`Invalid environment: ${parsed.error.message}`);
+  const env = {
+    ...parsed.data,
+    MAIN_SITE_URL:
+      parsed.data.NEXT_PUBLIC_MAIN_SITE_URL ??
+      parsed.data.MAIN_SITE_URL ??
+      parsed.data.NEXT_PUBLIC_APP_URL ??
+      "http://localhost:3000",
+  };
+  assertNotProductionSupabaseUrl(env.NEXT_PUBLIC_SUPABASE_URL);
   if (shouldEnforce(env)) {
-  for (const key of requiredInProduction) {
-    if (!env[key]) throw new Error(`Missing required production environment variable: ${key}`);
-  }
-    if (env.mollie_payments_enabled && !env.MOLLIE_API_KEY) throw new Error("mollie_payments_enabled requires MOLLIE_API_KEY");
-    if (env.identity_verification_enabled && !env.IDENTITY_PROVIDER_API_KEY) throw new Error("identity_verification_enabled requires IDENTITY_PROVIDER_API_KEY");
+    for (const key of requiredInProduction) {
+      if (!env[key])
+        throw new Error(
+          `Missing required production environment variable: ${key}`,
+        );
+    }
+    if (env.mollie_payments_enabled && !env.MOLLIE_API_KEY)
+      throw new Error("mollie_payments_enabled requires MOLLIE_API_KEY");
+    if (env.identity_verification_enabled && !env.IDENTITY_PROVIDER_API_KEY) {
+      throw new Error(
+        "identity_verification_enabled requires IDENTITY_PROVIDER_API_KEY",
+      );
+    }
   }
   return env;
 }
 
 /** Backwards-compatible lazy proxy; accessing a value performs runtime validation. */
-export const env: Env = new Proxy({} as Env, { get: (_target, property) => getEnv()[property as keyof Env] });
+export const env: Env = new Proxy({} as Env, {
+  get: (_target, property) => getEnv()[property as keyof Env],
+});

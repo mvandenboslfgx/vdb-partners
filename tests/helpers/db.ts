@@ -1,9 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
-import type { Role } from "@/lib/auth/roles";
 
 config({ path: ".env.local", override: true });
+
+/** Local Docker `user_roles` proposal roles — not Owner RC2 shared roles. */
+export type LocalLegacyRole = "owner" | "finance_admin" | "sales_admin" | "support_admin" | "seller";
 
 export function createTestAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -12,7 +14,7 @@ export function createTestAdminClient() {
   return createClient(url, serviceRole, { auth: { autoRefreshToken: false, persistSession: false } });
 }
 
-export async function createAuthUser(input: { email?: string; password?: string; role: Role }) {
+export async function createAuthUser(input: { email?: string; password?: string; role: LocalLegacyRole }) {
   const db = createTestAdminClient();
   const { data, error } = await db.auth.admin.createUser({
     email: input.email ?? `business-flow-${randomUUID()}@example.test`,

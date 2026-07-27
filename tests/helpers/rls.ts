@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { Role } from "@/lib/auth/roles";
-import { createAuthUser, createTestAdminClient } from "@/tests/helpers/db";
+import { createAuthUser, createTestAdminClient, type LocalLegacyRole } from "@/tests/helpers/db";
 import {
   advanceOrderToAwaitingPayment,
   approveSeller,
@@ -23,7 +22,7 @@ export type AuthedActor = {
   userId: string;
   email: string;
   password: string;
-  role: Role;
+  role: LocalLegacyRole;
   sellerProfileId?: string;
   client: SupabaseClient;
   accessToken: string;
@@ -57,7 +56,7 @@ export async function signInAs(email: string, password: string): Promise<{ clien
 
 export async function createJwtActor(input: {
   label: string;
-  role: Role;
+  role: LocalLegacyRole;
   email?: string;
   password?: string;
 }): Promise<AuthedActor> {

@@ -18,35 +18,39 @@ export const actions = [
 ] as const;
 
 export type Action = (typeof actions)[number];
-export type Role = "owner" | "finance_admin" | "sales_admin" | "support_admin" | "seller";
+export type Role =
+  "owner" | "admin" | "staff" | "partner" | "partner_pending" | "customer";
 
 /**
- * Fail-closed permission matrix.
- * Sales admin must NOT see costs/margins or execute payouts.
- * Support admin must NOT mutate financial data.
- * Finance admin must NOT promote owners/admins or rewrite agreements.
+ * Fail-closed permission matrix mapped to Owner RC2 shared roles.
+ * staff ≈ SUPPORT/CONTENT; admin ≈ ADMIN; partner ≈ ACTIVE partner_profiles.
  */
 const allowed: Record<Role, readonly Action[]> = {
   owner: actions,
-  finance_admin: [
+  admin: [
+    "approve_seller",
+    "manage_products",
     "view_costs",
     "confirm_payment",
+    "confirm_delivery",
     "release_commission",
     "process_payout",
     "view_audit",
-    "export_reports",
-    "view_sellers",
-  ],
-  sales_admin: [
-    "approve_seller",
     "view_sellers",
     "manage_sales_status",
-    "confirm_delivery",
     "view_support",
+    "export_reports",
+  ],
+  staff: [
+    "view_support",
+    "confirm_delivery",
+    "view_sellers",
+    "manage_sales_status",
     "view_audit",
   ],
-  support_admin: ["view_support", "confirm_delivery", "view_sellers", "manage_sales_status"],
-  seller: ["create_order", "view_own_orders", "manage_own_profile"],
+  partner: ["create_order", "view_own_orders", "manage_own_profile"],
+  partner_pending: ["manage_own_profile"],
+  customer: [],
 };
 
 export function can(action: Action, role: Role) {

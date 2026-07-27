@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 /** Creates immutable commission calculations only after VDB has verified payment. */
 export async function calculateAndCreateCommission(orderId: string) {
-  const actor = await requireRole("owner", "finance_admin");
+  const actor = await requireRole("owner", "admin");
   const db = createAdminClient();
   const { data: order, error } = await db.from("orders").select("id, seller_id, status").eq("id", orderId).single();
   if (error) throw error;
@@ -33,7 +33,7 @@ export async function calculateAndCreateCommission(orderId: string) {
 
 /** Cron/admin release. Database trigger remains the final authority on hold timing. */
 export async function releaseAvailableCommissions() {
-  const actor = await requireRole("owner", "finance_admin");
+  const actor = await requireRole("owner", "admin");
   const db = createAdminClient();
   const { data: candidates, error } = await db.from("commissions").select("id, order_id").eq("status", "pending");
   if (error) throw error;

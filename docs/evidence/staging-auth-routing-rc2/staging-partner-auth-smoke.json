@@ -1,0 +1,220 @@
+{
+  "generatedAt": "2026-07-27T20:59:32.181Z",
+  "contract": "vdb-backend-contract@0.2.0-rc.2",
+  "schema": "2026.07.27.financial-concurrency-rc2",
+  "staging": "qzekuvmgfekzsowdecyk",
+  "productionDenylist": "nhsrdnjfsxfikfbdmdfj",
+  "partAPartnerId": "e8374bc0-d786-4838-8be9-a45cfcd5c611",
+  "partALeadId": "f412c2ba-43b7-4712-86ac-797814f4ff4b",
+  "results": [
+    {
+      "name": "runtime_url_is_staging",
+      "ok": true,
+      "host": "qzekuvmgfekzsowdecyk.supabase.co"
+    },
+    {
+      "name": "contract_pin",
+      "ok": true
+    },
+    {
+      "name": "schema_pin",
+      "ok": true
+    },
+    {
+      "name": "production_denylist",
+      "ok": true
+    },
+    {
+      "name": "anon_partner_profiles_denied_or_empty",
+      "ok": true,
+      "status": 401,
+      "count": -1
+    },
+    {
+      "name": "login_partner",
+      "ok": true,
+      "email": "staging+part_a@example.test"
+    },
+    {
+      "name": "route_partner",
+      "ok": true,
+      "email": "staging+part_a@example.test",
+      "primaryRole": "partner",
+      "destination": "/dashboard",
+      "reason": "partner_dashboard",
+      "partnerStatus": "ACTIVE"
+    },
+    {
+      "name": "partner_active_routes_dashboard_a",
+      "ok": true,
+      "primaryRole": "partner",
+      "destination": "/dashboard"
+    },
+    {
+      "name": "partner_commissions_a",
+      "ok": true,
+      "status": 200,
+      "count": 1
+    },
+    {
+      "name": "partner_leads_a",
+      "ok": true,
+      "status": 200,
+      "count": 1
+    },
+    {
+      "name": "login_partner",
+      "ok": true,
+      "email": "staging+part_b@example.test"
+    },
+    {
+      "name": "route_partner",
+      "ok": true,
+      "email": "staging+part_b@example.test",
+      "primaryRole": "partner",
+      "destination": "/dashboard",
+      "reason": "partner_dashboard",
+      "partnerStatus": "ACTIVE"
+    },
+    {
+      "name": "partner_active_routes_dashboard_b",
+      "ok": true,
+      "primaryRole": "partner",
+      "destination": "/dashboard"
+    },
+    {
+      "name": "partner_commissions_b",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_leads_b",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_denied_partner_a_lead",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "login_partner_pending",
+      "ok": true,
+      "email": "staging+part_pending@example.test"
+    },
+    {
+      "name": "route_partner_pending",
+      "ok": true,
+      "email": "staging+part_pending@example.test",
+      "primaryRole": "partner_pending",
+      "destination": "/onboarding",
+      "reason": "partner_pending",
+      "partnerStatus": "PENDING"
+    },
+    {
+      "name": "pending_routes_onboarding",
+      "ok": true,
+      "destination": "/onboarding",
+      "primaryRole": "partner_pending"
+    },
+    {
+      "name": "login_customer",
+      "ok": true,
+      "email": "staging+cust_a@example.test"
+    },
+    {
+      "name": "route_customer",
+      "ok": true,
+      "email": "staging+cust_a@example.test",
+      "primaryRole": "customer",
+      "destination": "/geen-toegang?reden=klant",
+      "reason": "customer_denied",
+      "partnerStatus": null
+    },
+    {
+      "name": "customer_denied_partner_dashboard",
+      "ok": true,
+      "destination": "/geen-toegang?reden=klant",
+      "primaryRole": "customer"
+    },
+    {
+      "name": "customer_partner_leads_forbidden_or_empty",
+      "ok": true,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "login_staff",
+      "ok": true,
+      "email": "staging+staff_s@example.test"
+    },
+    {
+      "name": "route_staff",
+      "ok": true,
+      "email": "staging+staff_s@example.test",
+      "primaryRole": "staff",
+      "destination": "/admin",
+      "reason": "admin",
+      "partnerStatus": null
+    },
+    {
+      "name": "staff_routes_admin",
+      "ok": true,
+      "destination": "/admin",
+      "primaryRole": "staff"
+    },
+    {
+      "name": "login_admin",
+      "ok": true,
+      "email": "staging+admin_a@example.test"
+    },
+    {
+      "name": "route_admin",
+      "ok": true,
+      "email": "staging+admin_a@example.test",
+      "primaryRole": "admin",
+      "destination": "/admin",
+      "reason": "admin",
+      "partnerStatus": null
+    },
+    {
+      "name": "admin_routes_admin",
+      "ok": true,
+      "destination": "/admin",
+      "primaryRole": "admin"
+    },
+    {
+      "name": "login_owner",
+      "ok": true,
+      "email": "staging+owner_o@example.test"
+    },
+    {
+      "name": "route_owner",
+      "ok": true,
+      "email": "staging+owner_o@example.test",
+      "primaryRole": "owner",
+      "destination": "/admin",
+      "reason": "admin",
+      "partnerStatus": null
+    },
+    {
+      "name": "owner_routes_admin",
+      "ok": true,
+      "destination": "/admin",
+      "primaryRole": "owner"
+    },
+    {
+      "name": "checkout_mollie_payouts_fail_closed",
+      "ok": true,
+      "enabled": []
+    }
+  ],
+  "summary": {
+    "total": 33,
+    "pass": 33,
+    "fail": 0
+  }
+}
