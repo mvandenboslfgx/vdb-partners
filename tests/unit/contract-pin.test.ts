@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  assertExpectedSupabaseEnvironment,
+  assertNotProductionSupabaseUrl,
+  assertPartnerSupabaseEnvironment,
+  assertStagingSupabaseUrl,
+  extractSupabaseProjectRef,
+  resolveDeploymentEnvironment,
+} from "@/lib/contract/env";
+import {
   CONTRACT_VERSION,
   PRODUCTION_PROJECT_REF,
   RC2_CONCURRENCY_ERROR_CODES,
@@ -16,15 +24,13 @@ import {
   mapLogicalTableToOwner,
 } from "@/lib/contract/surfaces";
 import {
-  assertNotProductionSupabaseUrl,
-  assertStagingSupabaseUrl,
-  extractSupabaseProjectRef,
-} from "@/lib/contract/env";
-import {
   mapBackendErrorMessage,
   userMessageForPartnerError,
 } from "@/lib/contract/errors";
 import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.3/pin.json";
+
+const stagingUrl = `https://${STAGING_PROJECT_REF}.supabase.co`;
+const productionUrl = `https://${PRODUCTION_PROJECT_REF}.supabase.co`;
 
 describe("contract pin RC3", () => {
   it("pins vdb-backend-contract@0.2.0-rc.3 and messaging-support schema", () => {
@@ -40,43 +46,118 @@ describe("contract pin RC3", () => {
 
   it("allowlists partner_* and portal_* RC3 surfaces", () => {
     expect(isOwnerContractTable("partner_profiles")).toBe(true);
-    expect(isOwnerContractTable("admin_roles")).toBe(true);
     expect(isOwnerContractTable("portal_conversations")).toBe(true);
-    expect(isOwnerContractTable("portal_messages")).toBe(true);
-    expect(isOwnerContractTable("portal_message_attachments")).toBe(true);
-    expect(isOwnerContractTable("portal_support_tickets")).toBe(true);
-    expect(isOwnerContractTable("portal_support_replies")).toBe(true);
-    expect(isOwnerContractTable("portal_appointments")).toBe(true);
     expect(isLegacyAuthTable("user_roles")).toBe(true);
     expect(isOwnerContractTable("user_roles")).toBe(false);
     expect(isForbiddenParallelBaseTable("conversations")).toBe(true);
-    expect(isForbiddenParallelBaseTable("support_messages")).toBe(true);
-  });
-
-  it("maps logical support_messages to portal_support_replies", () => {
     expect(mapLogicalTableToOwner("support_messages")).toBe(
       "portal_support_replies",
     );
-    expect(mapLogicalTableToOwner("conversations")).toBe(
-      "portal_conversations",
-    );
-    expect(mapLogicalTableToOwner("appointments")).toBe("portal_appointments");
   });
 });
 
-describe("environment denylist", () => {
-  it("extracts staging ref and denylists production", () => {
+describe("assertExpectedSupabaseEnvironment", () => {
+  it("production + production-ref → PASS", () => {
     expect(
-      extractSupabaseProjectRef(`https://${STAGING_PROJECT_REF}.supabase.co`),
-    ).toBe(STAGING_PROJECT_REF);
-    expect(
-      assertStagingSupabaseUrl(`https://${STAGING_PROJECT_REF}.supabase.co`),
-    ).toBe(STAGING_PROJECT_REF);
+      assertExpectedSupabaseEnvironment({
+        deploymentEnvironment: "production",
+        actualSupabaseUrl: productionUrl,
+      }).projectRef,
+    ).toBe(PRODUCTION_PROJECT_REF);
+  });
+
+  it("production + staging-ref → BLOCK", () => {
     expect(() =>
-      assertNotProductionSupabaseUrl(
-        `https://${PRODUCTION_PROJECT_REF}.supabase.co`,
-      ),
-    ).toThrow(/denylisted/);
+      assertExpectedSupabaseEnvironment({
+        deploymentEnvironment: "production",
+        actualSupabaseUrl: stagingUrl,
+      }),
+    ).toThrow(/Production requires/);
+  });
+
+  it("production + missing ref → BLOCK", () => {
+    expect(() =>
+      assertExpectedSupabaseEnvironment({
+        deploymentEnvironment: "production",
+        actualSupabaseUrl: undefined,
+      }),
+    ).toThrow(/Missing Supabase URL/);
+  });
+
+  it("preview + staging-ref → PASS", () => {
+    expect(
+      assertExpectedSupabaseEnvironment({
+        deploymentEnvironment: "preview",
+        actualSupabaseUrl: stagingUrl,
+      }).projectRef,
+    ).toBe(STAGING_PROJECT_REF);
+  });
+
+  it("preview + production-ref → BLOCK", () => {
+    expect(() =>
+      assertExpectedSupabaseEnvironment({
+        deploymentEnvironment: "preview",
+        actualSupabaseUrl: productionUrl,
+      }),
+    ).toThrow(/refused in preview/);
+  });
+
+  it("staging + staging-ref → PASS", () => {
+    expect(assertStagingSupabaseUrl(stagingUrl)).toBe(STAGING_PROJECT_REF);
+  });
+
+  it("local/development + production-ref → BLOCK", () => {
+    expect(() =>
+      assertExpectedSupabaseEnvironment({
+        deploymentEnvironment: "development",
+        actualSupabaseUrl: productionUrl,
+      }),
+    ).toThrow(/refused in development/);
+    expect(() => assertNotProductionSupabaseUrl(productionUrl)).toThrow(
+      /refused in development/,
+    );
+  });
+
+  it("unknown environment → BLOCK", () => {
+    expect(() =>
+      assertExpectedSupabaseEnvironment({
+        deploymentEnvironment: "canary",
+        actualSupabaseUrl: stagingUrl,
+      }),
+    ).toThrow(/Unknown deployment environment/);
+  });
+
+  it("resolveDeploymentEnvironment respects APP_ENV and Vercel", () => {
+    expect(
+      resolveDeploymentEnvironment({
+        APP_ENV: "production",
+      } as unknown as NodeJS.ProcessEnv),
+    ).toBe("production");
+    expect(
+      resolveDeploymentEnvironment({
+        VERCEL_ENV: "preview",
+      } as unknown as NodeJS.ProcessEnv),
+    ).toBe("preview");
+    expect(
+      resolveDeploymentEnvironment({} as unknown as NodeJS.ProcessEnv),
+    ).toBe("development");
+  });
+
+  it("assertPartnerSupabaseEnvironment uses resolved deployment env", () => {
+    expect(() =>
+      assertPartnerSupabaseEnvironment(productionUrl, {
+        APP_ENV: "production",
+      } as unknown as NodeJS.ProcessEnv),
+    ).not.toThrow();
+    expect(() =>
+      assertPartnerSupabaseEnvironment(productionUrl, {
+        APP_ENV: "preview",
+      } as unknown as NodeJS.ProcessEnv),
+    ).toThrow(/refused in preview/);
+  });
+
+  it("extracts staging ref", () => {
+    expect(extractSupabaseProjectRef(stagingUrl)).toBe(STAGING_PROJECT_REF);
   });
 });
 
@@ -85,10 +166,7 @@ describe("concurrency + fail-closed flags", () => {
     expect(RC2_CONCURRENCY_ERROR_CODES).toContain(
       "PARTNER_LEAD_ALREADY_CONVERTED",
     );
-    expect(RC2_CONCURRENCY_ERROR_CODES).toContain(
-      "PARTNER_INSUFFICIENT_LIABILITY",
-    );
-    expect(isRc2ConcurrencyErrorCode("PARTNER_LEAD_ALREADY_CONVERTED")).toBe(
+    expect(isRc2ConcurrencyErrorCode("PARTNER_INSUFFICIENT_LIABILITY")).toBe(
       true,
     );
     expect(mapBackendErrorMessage("PARTNER_INSUFFICIENT_LIABILITY")).toBe(

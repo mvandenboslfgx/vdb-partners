@@ -1,0 +1,20 @@
+﻿node.exe : Fetching projects in matthijs-projects-301cd812
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Fetching projec...ojects-301cd812:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+> Projects found under matthijs-projects-301cd812  [2s]
+
+  Project Name          Latest Production URL                                               Updated   Node Version   
+  vdbdigital2-0         https://vdbdigital.nl                                               28m       24.x           
+  vdb-digital-staging   https://vdb-digital-staging-matthijs-projects-301cd812.vercel.app   30m       24.x           
+  grill-gasten          https://www.grillgasten.eu                                          8d        24.x           
+  suno-bot              https://suno-bot.vercel.app                                         76d       24.x           
+  tvelio-koaw           https://tvelio-koaw-matthijs-projects-301cd812.vercel.app           110d      24.x           
+  stan-145h             https://stan-145h.vercel.app                                        113d      24.x           
+  tvelio                https://app.tvelio.com                                              113d      24.x           
+  stan                  https://stan-seven.vercel.app                                       113d      24.x           
+  tvelio2.0             https://tvelio20.vercel.app                                         113d      24.x           
+

@@ -5,7 +5,7 @@ import {
   type PartnerIdentity,
 } from "@/lib/auth/identity";
 import { isRole, type Role } from "@/lib/auth/roles";
-import { assertNotProductionSupabaseUrl } from "@/lib/contract/env";
+import { assertPartnerSupabaseEnvironment } from "@/lib/contract/env";
 
 export interface CurrentProfile {
   id: string;
@@ -19,7 +19,7 @@ export interface CurrentProfile {
 }
 
 export async function getSession() {
-  assertNotProductionSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
   const supabase = await createClient();
   const {
     data: { session },
@@ -32,7 +32,7 @@ export async function getSession() {
 export async function getCurrentProfile(
   user?: User,
 ): Promise<CurrentProfile | null> {
-  assertNotProductionSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
   const supabase = await createClient();
   const currentUser = user ?? (await supabase.auth.getUser()).data.user;
   if (!currentUser) return null;

@@ -1,15 +1,17 @@
 import { STAGING_PROJECT_REF } from "@/lib/contract/pin";
 import { PartnerPortalError } from "@/lib/contract/errors";
-import { assertNotProductionSupabaseUrl } from "@/lib/contract/env";
+import { assertPartnerSupabaseEnvironment } from "@/lib/contract/env";
 
 /**
  * Local proposal seller_* workflows remain for isolated Docker proofs only.
- * Against shared staging/remote Owner schema they must not run.
+ * Against shared staging/production Owner schema they must not run.
  */
 export function assertLocalLegacySellerDomainAllowed(
   url = process.env.NEXT_PUBLIC_SUPABASE_URL,
 ): void {
-  assertNotProductionSupabaseUrl(url);
+  // Runtime environment contract first (production only when explicitly production-mode).
+  assertPartnerSupabaseEnvironment(url);
+
   if (!url) return;
   const remote =
     url.includes("supabase.co") || url.includes(STAGING_PROJECT_REF);

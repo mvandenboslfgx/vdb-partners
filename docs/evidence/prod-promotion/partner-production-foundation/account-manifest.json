@@ -1,0 +1,49 @@
+{
+  "marker": "PARTNER_PROD_SMOKE_RC3",
+  "projectRef": "nhsrdnjfsxfikfbdmdfj",
+  "vaultPath": "C:\\Users\\XXX\\.vdb-vault\\partner-production-auth-smoke.env",
+  "authBefore": 10,
+  "authAfter": 12,
+  "createdUsers": [
+    "prod-smoke-partner-b",
+    "prod-smoke-partner-pending"
+  ],
+  "partners": [
+    {
+      "alias": "prod-smoke-partner-a",
+      "userIdMasked": "0185bb84…",
+      "partnerIdMasked": "7ca28b9c…",
+      "roleStatus": "partner",
+      "partnerStatus": "ACTIVE",
+      "emailMasked": "prod…@vdbdigital.invalid"
+    },
+    {
+      "alias": "prod-smoke-partner-b",
+      "userIdMasked": "d71180a7…",
+      "partnerIdMasked": "4d35f26b…",
+      "roleStatus": "partner",
+      "partnerStatus": "ACTIVE",
+      "emailMasked": "prod…@vdbdigital.invalid"
+    },
+    {
+      "alias": "prod-smoke-partner-pending",
+      "userIdMasked": "2ab57632…",
+      "partnerIdMasked": "a794a308…",
+      "roleStatus": "partner_pending",
+      "partnerStatus": "PENDING",
+      "emailMasked": "prod…@vdbdigital.invalid"
+    }
+  ],
+  "handoffAliases": [
+    "cust_a",
+    "cust_b",
+    "staff",
+    "admin",
+    "owner"
+  ],
+  "notes": [
+    "Credentials only in vault path",
+    "No Mollie / payout / checkout / realtime / booking",
+    "Synthetic @vdbdigital.invalid emails"
+  ]
+}

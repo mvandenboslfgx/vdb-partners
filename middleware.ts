@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
-import { assertNotProductionSupabaseUrl } from "@/lib/contract/env";
+import { assertPartnerSupabaseEnvironment } from "@/lib/contract/env";
 
 export async function middleware(request: NextRequest) {
-  assertNotProductionSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
   const response = await updateSession(request);
   const path = request.nextUrl.pathname;
   const protectedPath =

@@ -1,6 +1,5 @@
 import { z } from "zod";
-import { assertNotProductionSupabaseUrl } from "@/lib/contract/env";
-
+import { assertPartnerSupabaseEnvironment } from "@/lib/contract/env";
 const booleanFromEnv = z
   .enum(["true", "false"])
   .optional()
@@ -68,7 +67,7 @@ export function getEnv(): Env {
       parsed.data.NEXT_PUBLIC_APP_URL ??
       "http://localhost:3000",
   };
-  assertNotProductionSupabaseUrl(env.NEXT_PUBLIC_SUPABASE_URL);
+  assertPartnerSupabaseEnvironment(env.NEXT_PUBLIC_SUPABASE_URL);
   if (shouldEnforce(env)) {
     for (const key of requiredInProduction) {
       if (!env[key])

@@ -1,0 +1,27 @@
+﻿node.exe : Fetching Domains under matthijs-projects-301cd812
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Fetching Domain...ojects-301cd812:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+> 7 Domains found under matthijs-projects-301cd812 [2s]
+ 
+  Domain                     Registrar           Nameservers         Expiration Date    Creator                     Age
+     
+  vdbdigital.shop            Third Party         Third Party         -                  matthijsvandenbos8-7365     14d
+     
+  grillgasten.eu             Third Party         Third Party         -                  matthijsvandenbos8-7365     75d
+     
+  vermeulenbouwservice.nl    Third Party         Third Party         -                  matthijsvandenbos8-7365     119
+d    
+  vdbdigital.nl              Third Party         Third Party         -                  matthijsvandenbos8-7365     142
+d    
+  de-elektricien.nl          Third Party         Third Party         -                  matthijsvandenbos8-7365     153
+d    
+  tvelio.com                 Third Party         Third Party         -                  matthijsvandenbos8-7365     181
+d    
+  lfgx-landingspage.com      Third Party         Third Party         -                  matthijsvandenbos8-7365     456
+d    
+ 
+

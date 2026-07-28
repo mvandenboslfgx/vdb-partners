@@ -1,0 +1,29 @@
+{
+  "gate": "RC3 PARTNER PORTAL PRODUCTION DEPLOYMENT",
+  "inventoryMode": "read_only",
+  "productionRef": "nhsrdnjfsxfikfbdmdfj",
+  "authUsers": 9,
+  "counts": {
+    "partner_profiles": 0,
+    "partners_active": 0,
+    "partners_pending": 0,
+    "admin_roles": 5,
+    "organization_members": 2,
+    "partner_leads": 0,
+    "partner_sales": 0,
+    "portal_conversations": 1
+  },
+  "slots": {
+    "active_partner_a": { "usable": false, "reason": "no_partner_profiles" },
+    "active_partner_b": { "usable": false, "reason": "no_partner_profiles" },
+    "pending_partner": { "usable": false, "reason": "no_partner_profiles" },
+    "customer": { "usable": "conditional", "reason": "org_members_exist_owner_smoke_vault_if_available" },
+    "staff": { "usable": "conditional", "reason": "admin_roles_exist" },
+    "admin": { "usable": "conditional", "reason": "admin_roles_exist" },
+    "owner": { "usable": "conditional", "reason": "admin_roles_exist" },
+    "anon": { "usable": true, "reason": "no_credentials_needed" }
+  },
+  "syntheticBootstrapExecuted": false,
+  "emailsPrinted": false,
+  "secretsPrinted": false
+}

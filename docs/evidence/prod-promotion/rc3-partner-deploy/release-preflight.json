@@ -1,0 +1,42 @@
+{
+  "gate": "RC3 PARTNER PORTAL PRODUCTION DEPLOYMENT",
+  "timestamp": "2026-07-28T17:20:00+02:00",
+  "verdict": "RC3 PARTNER PORTAL PRODUCTION DEPLOYMENT BLOCKED",
+  "push": false,
+  "deploy": false,
+  "databaseMutations": false,
+  "mobile": false,
+  "repositoryPath": "C:\\Users\\XXX\\vdb-partners",
+  "branch": "main",
+  "head": "a380db26d6fb4426e2a8bc46e9c8d94388766690",
+  "tag": "rc3-cross-repository-release-candidate",
+  "tagTarget": "a380db26d6fb4426e2a8bc46e9c8d94388766690",
+  "workingTree": "clean",
+  "remoteDivergence": "UNCLEAR_EMPTY_REMOTE",
+  "remoteHeadsCount": 0,
+  "remoteTagsCount": 0,
+  "contractVersion": "vdb-backend-contract@0.2.0-rc.3",
+  "schemaVersion": "2026.07.25.messaging-support-appointments-rc3",
+  "productionSupabaseRef": "nhsrdnjfsxfikfbdmdfj",
+  "dbMigrationCount": 48,
+  "dbTip": "20260728090100",
+  "deploymentPlatform": "vercel",
+  "deploymentProject": null,
+  "productionUrlExpected": "https://partners.vdbdigital.nl",
+  "productionUrlResolved": null,
+  "flags": {
+    "checkout": false,
+    "mollieLive": false,
+    "payoutExecution": false,
+    "messagingRealtime": false,
+    "supportInternalNotes": false,
+    "appointmentsBooking": false
+  },
+  "stopReasons": [
+    "PRODUCTION_SUPABASE_DENYLISTED_IN_RC_CODE",
+    "EMPTY_OR_UNCLEAR_GIT_REMOTE",
+    "MISSING_VERCEL_PARTNER_PROJECT",
+    "MISSING_PARTNERS_DOMAIN_AND_DNS",
+    "MISSING_PRODUCTION_ENV_ON_DEPLOY_TARGET"
+  ]
+}

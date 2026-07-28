@@ -8,7 +8,7 @@ describe("local legacy seller domain gate", () => {
     ).not.toThrow();
   });
 
-  it("blocks staging and production remote URLs", () => {
+  it("blocks staging and production remote URLs for seller_* workflows", () => {
     expect(() =>
       assertLocalLegacySellerDomainAllowed(
         "https://qzekuvmgfekzsowdecyk.supabase.co",
@@ -18,6 +18,6 @@ describe("local legacy seller domain gate", () => {
       assertLocalLegacySellerDomainAllowed(
         "https://nhsrdnjfsxfikfbdmdfj.supabase.co",
       ),
-    ).toThrow(/denylisted/);
+    ).toThrow(/refused in development|disabled against Owner RC2/);
   });
 });

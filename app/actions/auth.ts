@@ -8,12 +8,12 @@ import {
   PartnerPortalError,
   userMessageForPartnerError,
 } from "@/lib/contract/errors";
-import { assertNotProductionSupabaseUrl } from "@/lib/contract/env";
+import { assertPartnerSupabaseEnvironment } from "@/lib/contract/env";
 
 export type ActionState = { error?: string; success?: string };
 
 async function destinationForUser(userId: string, email: string | null) {
-  assertNotProductionSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
   const supabase = await createClient();
   const identity = await resolvePartnerIdentity(supabase, userId, email);
   return destinationForIdentity(identity).path;
@@ -25,7 +25,7 @@ export async function signIn(
 ): Promise<ActionState> {
   let destination: string;
   try {
-    assertNotProductionSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+    assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
     const supabase = await createClient();
     const { data, error } = await supabase.auth.signInWithPassword({
       email: String(formData.get("email") ?? ""),
@@ -57,7 +57,7 @@ export async function registerPartner(
   formData: FormData,
 ): Promise<ActionState> {
   try {
-    assertNotProductionSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+    assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
     const supabase = await createClient();
     const email = String(formData.get("email") ?? "");
     const password = String(formData.get("password") ?? "");
@@ -107,7 +107,7 @@ export async function sendPasswordReset(
   formData: FormData,
 ): Promise<ActionState> {
   try {
-    assertNotProductionSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+    assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
     const supabase = await createClient();
     const { error } = await supabase.auth.resetPasswordForEmail(
       String(formData.get("email") ?? ""),

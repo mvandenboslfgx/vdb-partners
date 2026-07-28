@@ -7,7 +7,8 @@
   ],
   "schemaPinNote": "Additive messaging/support/appointments on RC2; retains partner_* financial surfaces and concurrency error codes.",
   "stagingProjectRef": "qzekuvmgfekzsowdecyk",
-  "productionProjectRefDenylist": ["nhsrdnjfsxfikfbdmdfj"],
+  "productionProjectRef": "nhsrdnjfsxfikfbdmdfj",
+  "canonicalProductionUrl": "https://partners.vdbdigital.nl",
   "repositoryRole": "PARTNER_CLIENT",
   "bundleSha256": "62bb1c31240f5eb7e16968a6a03d425e52f2c2ef8b09c38c6cbd549ed331973f"
 }

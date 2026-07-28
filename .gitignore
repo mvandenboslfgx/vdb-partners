@@ -12,6 +12,8 @@
 .env.*
 !.env.example
 !.env.staging.local.example
+!.env.production.local.example
+!.env.preview.local.example
 .vercel
 supabase/.branches
 supabase/.temp

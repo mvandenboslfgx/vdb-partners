@@ -6,7 +6,9 @@ import featureFlags from "@/contracts/vdb-backend-contract-0.2.0-rc.3/feature-fl
 export const CONTRACT_VERSION = pin.contractVersion;
 export const SCHEMA_VERSION = pin.schemaVersion;
 export const STAGING_PROJECT_REF = pin.stagingProjectRef;
-export const PRODUCTION_PROJECT_REF = pin.productionProjectRefDenylist[0];
+/** Canonical production Supabase project — allowed only in explicit production deployment mode. */
+export const PRODUCTION_PROJECT_REF = pin.productionProjectRef;
+export const CANONICAL_PRODUCTION_URL = pin.canonicalProductionUrl;
 export const REPOSITORY_ROLE = pin.repositoryRole;
 export const CONTRACT_BUNDLE_SHA256 = pin.bundleSha256;
 
@@ -21,7 +23,7 @@ export const MOBILE_CLIENT_TABLE_MAPPING =
 export const FORBIDDEN_PARALLEL_BASE_TABLES =
   tables.forbiddenParallelBaseTables as readonly string[];
 
-/** Retained from financial-concurrency RC2 (still required on RC3 staging). */
+/** Retained from financial-concurrency RC2 (still required on RC3). */
 export const RC2_CONCURRENCY_ERROR_CODES = [
   "PARTNER_LEAD_ALREADY_CONVERTED",
   "PARTNER_INSUFFICIENT_LIABILITY",
