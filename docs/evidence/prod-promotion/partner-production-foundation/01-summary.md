@@ -68,4 +68,8 @@ Deprecated wrapper: `assertNotProductionSupabaseUrl` (= development refuse-prod)
 
 ## 4. Production deploy status
 
-**NOT EXECUTED** — out of scope for this gate.
+**NOT AUTHORIZED.** Accidental CLI production deployments were created then **deleted**; `partners.vdbdigital.nl` alias removed; DNS never pointed (NXDOMAIN). See `99-verdict.md`.
+
+## 5. Final verdict
+
+`PARTNER PRODUCTION FOUNDATION REMEDIATION BLOCKED`
