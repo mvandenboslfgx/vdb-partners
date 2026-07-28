@@ -110,12 +110,58 @@ export async function loadPartnerLeads(partnerId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("partner_leads")
-    .select("id, status, contact_name, contact_email, company_name, created_at")
+    .select(
+      "id, status, contact_name, contact_email, company_name, product_id, product_slug, created_at",
+    )
     .eq("partner_id", partnerId)
     .order("created_at", { ascending: false })
     .limit(50);
   if (error) throw error;
   return data ?? [];
+}
+
+export type PartnerCatalogItem = {
+  product_id: string;
+  slug: string;
+  name: string;
+  short_description: string | null;
+  category_slug: string | null;
+  category_name: string | null;
+  price_cents: number | null;
+  from_price_cents: number | null;
+  price_label: string | null;
+  billing_type: string | null;
+  currency: string | null;
+  vat_percent: number | null;
+  audience_b2b: boolean | null;
+  audience_b2c: boolean | null;
+  delivery_time: string | null;
+  primary_image_path: string | null;
+  partner_visibility: string | null;
+  partner_commission_type: string | null;
+  partner_commission_value: number | null;
+  partner_commission_currency: string | null;
+  partner_commission_status: string | null;
+  partner_requires_approval: boolean | null;
+  partner_terms: string | null;
+  partner_sales_copy: string | null;
+  partner_availability: string | null;
+  partner_featured: boolean | null;
+  partner_priority: number | null;
+  cta_mode: string | null;
+};
+
+/** Owner SSOT catalog via SECURITY DEFINER RPC — never query products table directly. */
+export async function loadPartnerCatalog(): Promise<PartnerCatalogItem[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("list_partner_catalog");
+  if (error) {
+    const mapped = mapBackendErrorMessage(error.message);
+    if (mapped)
+      throw new PartnerPortalError(mapped, userMessageForPartnerError(mapped));
+    throw error;
+  }
+  return (data as PartnerCatalogItem[] | null) ?? [];
 }
 
 export async function loadPartnerCommissions(partnerId: string) {
