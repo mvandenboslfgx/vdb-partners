@@ -1,0 +1,614 @@
+{
+  "site": "https://vdb-partners-u1lhs8muc-matthijs-projects-301cd812.vercel.app",
+  "deploymentId": "dpl_8Zu94M3UwFm5rT6Lt2m2YLLZZePF",
+  "host": "nhsrdnjfsxfikfbdmdfj.supabase.co",
+  "contract": "vdb-backend-contract@0.2.0-rc.3",
+  "schema": "2026.07.25.messaging-support-appointments-rc3",
+  "passed": 86,
+  "failed": 0,
+  "total": 86,
+  "results": [
+    {
+      "name": "runtime_url_is_production",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "contract_pin_rc3",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "schema_pin_rc3",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "no_staging_ref_in_vault",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "site_health_ok",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "mollie_not_configured",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "site_home_ok",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "site_html_no_staging_ref",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "site_html_no_prod_ref_leak",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "site_login_ok",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "anon_portal_conversations_denied_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 401,
+      "count": null
+    },
+    {
+      "name": "anon_partner_leads_denied_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 401,
+      "count": null
+    },
+    {
+      "name": "anon_user_roles_denied_or_missing",
+      "ok": true,
+      "note": null,
+      "status": 404,
+      "count": null
+    },
+    {
+      "name": "anon_seller_profiles_denied_or_missing",
+      "ok": true,
+      "note": null,
+      "status": 404,
+      "count": null
+    },
+    {
+      "name": "login_partner_a",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "route_partner_a",
+      "ok": true,
+      "note": "partner",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "dest_partner_a",
+      "ok": true,
+      "note": "/dashboard",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "refresh_partner_a",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "http_partner_a_protected_no_cookie",
+      "ok": true,
+      "note": null,
+      "status": 307,
+      "count": null
+    },
+    {
+      "name": "login_partner_b",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "route_partner_b",
+      "ok": true,
+      "note": "partner",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "dest_partner_b",
+      "ok": true,
+      "note": "/dashboard",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "refresh_partner_b",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "http_partner_b_protected_no_cookie",
+      "ok": true,
+      "note": null,
+      "status": 307,
+      "count": null
+    },
+    {
+      "name": "login_partner_pending",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "route_partner_pending",
+      "ok": true,
+      "note": "partner_pending",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "dest_partner_pending",
+      "ok": true,
+      "note": "/onboarding",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "refresh_partner_pending",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "http_partner_pending_protected_no_cookie",
+      "ok": true,
+      "note": null,
+      "status": 307,
+      "count": null
+    },
+    {
+      "name": "login_customer",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "route_customer",
+      "ok": true,
+      "note": "customer",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "dest_customer",
+      "ok": true,
+      "note": "/geen-toegang?reden=klant",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "refresh_customer",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "http_customer_protected_no_cookie",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "login_staff",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "route_staff",
+      "ok": true,
+      "note": "staff",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "dest_staff",
+      "ok": true,
+      "note": "/admin",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "refresh_staff",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "http_staff_protected_no_cookie",
+      "ok": true,
+      "note": null,
+      "status": 307,
+      "count": null
+    },
+    {
+      "name": "login_admin",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "route_admin",
+      "ok": true,
+      "note": "admin",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "dest_admin",
+      "ok": true,
+      "note": "/admin",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "refresh_admin",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "http_admin_protected_no_cookie",
+      "ok": true,
+      "note": null,
+      "status": 307,
+      "count": null
+    },
+    {
+      "name": "login_owner",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "route_owner",
+      "ok": true,
+      "note": "owner",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "dest_owner",
+      "ok": true,
+      "note": "/admin",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "refresh_owner",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "http_owner_protected_no_cookie",
+      "ok": true,
+      "note": null,
+      "status": 307,
+      "count": null
+    },
+    {
+      "name": "partner_a_partner_leads_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_partner_sales_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_partner_commissions_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_partner_ledger_entries_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_partner_payouts_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_partner_payout_requests_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_liability_rpc",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "partner_a_partner_financial_summary",
+      "ok": true,
+      "note": "ok",
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "partner_a_conversations_ok_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_support_tickets_ok_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "partner_a_appointments_ok_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "partner_a_relogin",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "partner_b_partner_leads_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_partner_sales_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_partner_commissions_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_partner_ledger_entries_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_partner_payouts_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_partner_payout_requests_readable_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_liability_rpc",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "partner_b_partner_financial_summary",
+      "ok": true,
+      "note": "ok",
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "partner_b_conversations_ok_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_b_support_tickets_ok_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "partner_b_appointments_ok_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "partner_b_denied_partner_a_leads",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "partner_a_denied_partner_b_leads",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "pending_status",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "pending_dest_onboarding",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "pending_sales_empty_or_denied",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "customer_partner_leads_denied_or_empty",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": null
+    },
+    {
+      "name": "partner_a_no_internal_support_reply",
+      "ok": true,
+      "note": null,
+      "status": 200,
+      "count": 0
+    },
+    {
+      "name": "checkout_not_enabled_probe",
+      "ok": true,
+      "note": "fail-closed defaults; no checkout UI exercised",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "payout_execution_not_run",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "messaging_realtime_not_enabled",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "appointment_booking_not_enabled",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "db_migrations_48",
+      "ok": true,
+      "note": "verified via supabase MCP pre-smoke",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "db_tip_20260728090100",
+      "ok": true,
+      "note": "verified via supabase MCP pre-smoke",
+      "status": null,
+      "count": null
+    },
+    {
+      "name": "deployment_id_expected",
+      "ok": true,
+      "note": null,
+      "status": null,
+      "count": null
+    }
+  ]
+}
