@@ -1,7 +1,7 @@
-import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.5/pin.json";
-import roles from "@/contracts/vdb-backend-contract-0.2.0-rc.5/roles.json";
-import tables from "@/contracts/vdb-backend-contract-0.2.0-rc.5/tables.json";
-import featureFlags from "@/contracts/vdb-backend-contract-0.2.0-rc.5/feature-flags.json";
+import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.6/pin.json";
+import roles from "@/contracts/vdb-backend-contract-0.2.0-rc.6/roles.json";
+import tables from "@/contracts/vdb-backend-contract-0.2.0-rc.6/tables.json";
+import featureFlags from "@/contracts/vdb-backend-contract-0.2.0-rc.6/feature-flags.json";
 
 export const CONTRACT_VERSION = pin.contractVersion;
 export const SCHEMA_VERSION = pin.schemaVersion;
@@ -23,7 +23,7 @@ export const MOBILE_CLIENT_TABLE_MAPPING =
 export const FORBIDDEN_PARALLEL_BASE_TABLES =
   tables.forbiddenParallelBaseTables as readonly string[];
 
-/** Retained from financial-concurrency RC2 (still required on RC5). */
+/** Retained from financial-concurrency RC2 (still required on RC6). */
 export const RC2_CONCURRENCY_ERROR_CODES = [
   "PARTNER_LEAD_ALREADY_CONVERTED",
   "PARTNER_INSUFFICIENT_LIABILITY",
@@ -42,8 +42,9 @@ export function isRc2ConcurrencyErrorCode(
 }
 
 /**
- * Fail-closed feature flags from Owner RC5 (defaults false).
+ * Fail-closed feature flags from Owner RC6 (defaults false).
  * Includes RC3 messaging/support flags plus RC5 compliance fixtures.
+ * Naming retained as RC5_* aliases for call-site stability; pin is RC6-only.
  */
 export const RC5_FAIL_CLOSED_FLAGS = [
   "mollie_checkout",

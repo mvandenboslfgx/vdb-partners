@@ -27,22 +27,26 @@ import {
   mapBackendErrorMessage,
   userMessageForPartnerError,
 } from "@/lib/contract/errors";
-import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.5/pin.json";
+import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.6/pin.json";
 
 const stagingUrl = `https://${STAGING_PROJECT_REF}.supabase.co`;
 const productionUrl = `https://${PRODUCTION_PROJECT_REF}.supabase.co`;
 
-describe("contract pin RC5", () => {
-  it("pins vdb-backend-contract@0.2.0-rc.5 and partner-identity schema", () => {
-    expect(CONTRACT_VERSION).toBe("vdb-backend-contract@0.2.0-rc.5");
-    expect(SCHEMA_VERSION).toBe("2026.07.29.partner-identity-directory-rc5");
+describe("contract pin RC6", () => {
+  it("pins vdb-backend-contract@0.2.0-rc.6 and partner-approval-aal2 schema", () => {
+    expect(CONTRACT_VERSION).toBe("vdb-backend-contract@0.2.0-rc.6");
+    expect(SCHEMA_VERSION).toBe("2026.07.29.partner-approval-aal2-rc6");
     expect(pin.contractVersion).toBe(CONTRACT_VERSION);
     expect(pin.schemaVersion).toBe(SCHEMA_VERSION);
+    expect(pin.priorCompatiblePins).toEqual([]);
+    expect(pin.sourceOwnerCommit).toBe(
+      "ccdeb8455696bf4381f2e6805e57e41aa3e51ca4",
+    );
     expect(STAGING_PROJECT_REF).toBe("qzekuvmgfekzsowdecyk");
     expect(PRODUCTION_PROJECT_REF).toBe("nhsrdnjfsxfikfbdmdfj");
   });
 
-  it("allowlists partner_* and portal_* RC5 surfaces including agreements", () => {
+  it("allowlists partner_* and portal_* RC6 surfaces including agreements", () => {
     expect(isOwnerContractTable("partner_profiles")).toBe(true);
     expect(isOwnerContractTable("partner_agreement_versions")).toBe(true);
     expect(isOwnerContractTable("partner_agreement_acceptances")).toBe(true);
