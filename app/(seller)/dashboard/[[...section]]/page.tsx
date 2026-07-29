@@ -14,6 +14,10 @@ import {
 } from "@/lib/partners/loaders";
 import { PartnerProductLeadForm } from "@/components/portal/partner-product-lead-form";
 import {
+  PartnerSupportCreateForm,
+  PartnerSupportReplyForm,
+} from "@/components/portal/partner-support-forms";
+import {
   loadConversationMessages,
   loadConversationReadState,
   loadMessageAttachments,
@@ -739,7 +743,7 @@ export default async function SellerPage({
         <>
           <PageHeader
             title="Supportticket"
-            description={`ID ${ticketId.slice(0, 8)}…`}
+            description={`ID ${ticketId.slice(0, 8)}… · alleen publieke antwoorden`}
           />
           {replies.length ? (
             <Card
@@ -765,6 +769,9 @@ export default async function SellerPage({
               description="Interne supportantwoorden blijven verborgen voor partners."
             />
           )}
+          <Card className="mt-6 p-6">
+            <PartnerSupportReplyForm ticketId={ticketId} />
+          </Card>
         </>
       );
     }
@@ -807,9 +814,17 @@ export default async function SellerPage({
         ) : (
           <EmptyState
             title="Nog geen supporttickets"
-            description="Tickets verschijnen hier wanneer ze aan uw account zijn gekoppeld."
+            description="Maak een supportverzoek aan. Interne notities van VDB blijven altijd verborgen."
           />
         )}
+        <Card className="mt-6 p-6" data-testid="partner-support-create-card">
+          <h2 className="mb-2 text-sm font-medium">Nieuw supportverzoek</h2>
+          <p className="text-muted mb-2 text-xs">
+            Vereist organisatie-lidmaatschap op Owner. Attachments zijn niet
+            beschikbaar in deze release.
+          </p>
+          <PartnerSupportCreateForm />
+        </Card>
       </>
     );
   }
@@ -898,7 +913,9 @@ export default async function SellerPage({
         description="Statussen worden nooit als betaald weergegeven zonder verificatie."
         action={
           slug === "support" ? (
-            <Button variant="outline">Supportverzoek starten</Button>
+            <Link href="/dashboard/support">
+              <Button variant="outline">Naar support</Button>
+            </Link>
           ) : undefined
         }
       />
