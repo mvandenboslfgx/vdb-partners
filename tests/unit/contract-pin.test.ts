@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
+  CONTRACT_VERSION,
+  PRODUCTION_PROJECT_REF,
+  RC2_CONCURRENCY_ERROR_CODES,
+  RC5_FAIL_CLOSED_FLAGS,
+  SCHEMA_VERSION,
+  STAGING_PROJECT_REF,
+  isRc2ConcurrencyErrorCode,
+  rc5FlagDefault,
+} from "@/lib/contract/pin";
+import {
   assertExpectedSupabaseEnvironment,
   assertNotProductionSupabaseUrl,
   assertPartnerSupabaseEnvironment,
@@ -7,16 +17,6 @@ import {
   extractSupabaseProjectRef,
   resolveDeploymentEnvironment,
 } from "@/lib/contract/env";
-import {
-  CONTRACT_VERSION,
-  PRODUCTION_PROJECT_REF,
-  RC2_CONCURRENCY_ERROR_CODES,
-  RC3_FAIL_CLOSED_FLAGS,
-  SCHEMA_VERSION,
-  STAGING_PROJECT_REF,
-  isRc2ConcurrencyErrorCode,
-  rc3FlagDefault,
-} from "@/lib/contract/pin";
 import {
   isForbiddenParallelBaseTable,
   isLegacyAuthTable,
@@ -27,31 +27,34 @@ import {
   mapBackendErrorMessage,
   userMessageForPartnerError,
 } from "@/lib/contract/errors";
-import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.3/pin.json";
+import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.5/pin.json";
 
 const stagingUrl = `https://${STAGING_PROJECT_REF}.supabase.co`;
 const productionUrl = `https://${PRODUCTION_PROJECT_REF}.supabase.co`;
 
-describe("contract pin RC3", () => {
-  it("pins vdb-backend-contract@0.2.0-rc.3 and messaging-support schema", () => {
-    expect(CONTRACT_VERSION).toBe("vdb-backend-contract@0.2.0-rc.3");
-    expect(SCHEMA_VERSION).toBe(
-      "2026.07.25.messaging-support-appointments-rc3",
-    );
+describe("contract pin RC5", () => {
+  it("pins vdb-backend-contract@0.2.0-rc.5 and partner-identity schema", () => {
+    expect(CONTRACT_VERSION).toBe("vdb-backend-contract@0.2.0-rc.5");
+    expect(SCHEMA_VERSION).toBe("2026.07.29.partner-identity-directory-rc5");
     expect(pin.contractVersion).toBe(CONTRACT_VERSION);
     expect(pin.schemaVersion).toBe(SCHEMA_VERSION);
     expect(STAGING_PROJECT_REF).toBe("qzekuvmgfekzsowdecyk");
     expect(PRODUCTION_PROJECT_REF).toBe("nhsrdnjfsxfikfbdmdfj");
   });
 
-  it("allowlists partner_* and portal_* RC3 surfaces", () => {
+  it("allowlists partner_* and portal_* RC5 surfaces including agreements", () => {
     expect(isOwnerContractTable("partner_profiles")).toBe(true);
+    expect(isOwnerContractTable("partner_agreement_versions")).toBe(true);
+    expect(isOwnerContractTable("partner_agreement_acceptances")).toBe(true);
     expect(isOwnerContractTable("portal_conversations")).toBe(true);
     expect(isLegacyAuthTable("user_roles")).toBe(true);
     expect(isOwnerContractTable("user_roles")).toBe(false);
     expect(isForbiddenParallelBaseTable("conversations")).toBe(true);
     expect(mapLogicalTableToOwner("support_messages")).toBe(
       "portal_support_replies",
+    );
+    expect(mapLogicalTableToOwner("partner_agreements")).toBe(
+      "partner_agreement_versions",
     );
   });
 });
@@ -177,9 +180,18 @@ describe("concurrency + fail-closed flags", () => {
     ).toMatch(/lead/i);
   });
 
-  it("defaults RC3 fail-closed flags to false", () => {
-    for (const flag of RC3_FAIL_CLOSED_FLAGS) {
-      expect(rc3FlagDefault(flag)).toBe(false);
+  it("defaults RC5 fail-closed flags to false", () => {
+    for (const flag of RC5_FAIL_CLOSED_FLAGS) {
+      expect(rc5FlagDefault(flag)).toBe(false);
     }
+  });
+
+  it("maps RC5 activation and validation errors", () => {
+    expect(mapBackendErrorMessage("ACTIVATION_DENIED:AGE_NOT_VERIFIED")).toBe(
+      "ACTIVATION_DENIED",
+    );
+    expect(mapBackendErrorMessage("VALIDATION_FAILED")).toBe(
+      "VALIDATION_FAILED",
+    );
   });
 });

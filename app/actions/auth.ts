@@ -9,6 +9,11 @@ import {
   userMessageForPartnerError,
 } from "@/lib/contract/errors";
 import { assertPartnerSupabaseEnvironment } from "@/lib/contract/env";
+import {
+  partnerApplicationIntakeSchema,
+  sanitizePartnerApplicationForSubmit,
+} from "@/lib/validation/partner-application";
+import { resolvePartnerTypeFromChoice } from "@/lib/validation/partner-type";
 
 export type ActionState = { error?: string; success?: string };
 
@@ -62,11 +67,45 @@ export async function registerPartner(
     const email = String(formData.get("email") ?? "");
     const password = String(formData.get("password") ?? "");
     const name = String(formData.get("name") ?? "").trim() || "Partner";
+    const partnerTypeChoice = String(formData.get("partnerType") ?? "");
+    const resolvedType = resolvePartnerTypeFromChoice(partnerTypeChoice);
+
+    const intake = partnerApplicationIntakeSchema.safeParse({
+      partnerType: resolvedType,
+      legalName: name,
+      tradeName:
+        String(formData.get("tradeName") ?? "").trim() ||
+        String(formData.get("companyName") ?? "").trim() ||
+        name,
+      contactEmail: email,
+      companyName:
+        String(formData.get("companyName") ?? "").trim() || undefined,
+      kvkNumber: String(formData.get("kvkNumber") ?? "").trim() || undefined,
+      vatNumber: String(formData.get("vatNumber") ?? "").trim() || undefined,
+      phone: String(formData.get("phone") ?? "").trim() || undefined,
+      businessSubtype:
+        String(formData.get("businessSubtype") ?? "").trim() || undefined,
+    });
+
+    if (!intake.success) {
+      const first = intake.error.issues[0]?.message;
+      return {
+        error:
+          first ??
+          "Kies expliciet Particulier of Zakelijk en controleer de verplichte velden.",
+      };
+    }
+
+    const payload = sanitizePartnerApplicationForSubmit(intake.data);
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { display_name: name },
+        data: {
+          display_name: name,
+          partner_type: payload.partnerType,
+        },
         emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/verify-email`,
       },
     });
@@ -77,17 +116,20 @@ export async function registerPartner(
       };
     }
 
-    // Canonical Owner RC2 application path — never insert into legacy user_roles.
+    // Owner RC5 typed application — never activates; never inserts legacy user_roles.
     const { error: applicationError } = await supabase.rpc(
       "submit_partner_application",
       {
-        p_contact_email: email,
-        p_legal_name: name,
-        p_trade_name: name,
+        p_partner_type: payload.partnerType,
+        p_legal_name: payload.legalName,
+        p_trade_name: payload.tradeName,
+        p_contact_email: payload.contactEmail,
+        p_kvk: payload.kvk,
+        p_vat: payload.vat,
+        p_phone: payload.phone,
       },
     );
     if (applicationError) {
-      // Auth user may exist while application awaits email confirmation / RLS; surface controlled message.
       return {
         error:
           "Account aangemaakt, maar partneraanvraag kon niet worden ingediend. Log later in of neem contact op met support.",

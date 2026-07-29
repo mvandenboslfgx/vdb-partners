@@ -30,7 +30,13 @@ export async function createPartnerLeadAction(
   _prev: CreatePartnerLeadState,
   formData: FormData,
 ): Promise<CreatePartnerLeadState> {
-  await requireRole("partner");
+  const profile = await requireRole("partner");
+  if (!profile.partnerApproved || profile.partnerStatus !== "ACTIVE") {
+    return {
+      error:
+        "Lead aanmelden is alleen beschikbaar voor ACTIVE partners. Pending of geschorste accounts zijn geblokkeerd.",
+    };
+  }
 
   const parsed = leadSchema.safeParse({
     productId: String(formData.get("productId") ?? ""),
