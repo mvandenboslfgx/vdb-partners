@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { destinationForIdentity } from "@/lib/auth/destination";
@@ -9,6 +10,8 @@ import {
   userMessageForPartnerError,
 } from "@/lib/contract/errors";
 import { assertPartnerSupabaseEnvironment } from "@/lib/contract/env";
+import { isFeatureEnabled } from "@/lib/feature-flags";
+import { buildRateLimitKey, rateLimit } from "@/lib/security/rate-limit";
 import {
   partnerApplicationIntakeSchema,
   sanitizePartnerApplicationForSubmit,
@@ -16,6 +19,15 @@ import {
 import { resolvePartnerTypeFromChoice } from "@/lib/validation/partner-type";
 
 export type ActionState = { error?: string; success?: string };
+
+async function clientIp() {
+  const requestHeaders = await headers();
+  return (
+    requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    requestHeaders.get("x-real-ip")?.trim() ||
+    "unknown"
+  );
+}
 
 async function destinationForUser(userId: string, email: string | null) {
   assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
@@ -31,9 +43,22 @@ export async function signIn(
   let destination: string;
   try {
     assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
+    const email = String(formData.get("email") ?? "");
+    const ip = await clientIp();
+    const limited = rateLimit(
+      buildRateLimitKey("auth:sign-in", { ip, email }),
+      { limit: 10, windowMs: 15 * 60_000 },
+    );
+    if (!limited.success) {
+      return {
+        error:
+          "Te veel inlogpogingen. Probeer het over enkele minuten opnieuw.",
+      };
+    }
+
     const supabase = await createClient();
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: String(formData.get("email") ?? ""),
+      email,
       password: String(formData.get("password") ?? ""),
     });
     if (error) return { error: error.message };
@@ -62,9 +87,28 @@ export async function registerPartner(
   formData: FormData,
 ): Promise<ActionState> {
   try {
+    if (!(await isFeatureEnabled("seller_registration_enabled"))) {
+      return {
+        error:
+          "Partnerregistratie is momenteel uitgeschakeld. Neem contact op met VDB Digital.",
+      };
+    }
+
     assertPartnerSupabaseEnvironment(process.env.NEXT_PUBLIC_SUPABASE_URL);
-    const supabase = await createClient();
     const email = String(formData.get("email") ?? "");
+    const ip = await clientIp();
+    const limited = rateLimit(
+      buildRateLimitKey("auth:register", { ip, email }),
+      { limit: 5, windowMs: 15 * 60_000 },
+    );
+    if (!limited.success) {
+      return {
+        error:
+          "Te veel registratiepogingen. Probeer het over enkele minuten opnieuw.",
+      };
+    }
+
+    const supabase = await createClient();
     const password = String(formData.get("password") ?? "");
     const name = String(formData.get("name") ?? "").trim() || "Partner";
     const partnerTypeChoice = String(formData.get("partnerType") ?? "");
