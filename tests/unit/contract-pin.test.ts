@@ -27,21 +27,20 @@ import {
   mapBackendErrorMessage,
   userMessageForPartnerError,
 } from "@/lib/contract/errors";
-import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.6/pin.json";
+import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.7/pin.json";
 
 const stagingUrl = `https://${STAGING_PROJECT_REF}.supabase.co`;
 const productionUrl = `https://${PRODUCTION_PROJECT_REF}.supabase.co`;
 
-describe("contract pin RC6", () => {
-  it("pins vdb-backend-contract@0.2.0-rc.6 and partner-approval-aal2 schema", () => {
-    expect(CONTRACT_VERSION).toBe("vdb-backend-contract@0.2.0-rc.6");
+describe("contract pin RC7", () => {
+  it("pins vdb-backend-contract@0.2.0-rc.7 with rc.6 read schema stamps", () => {
+    expect(CONTRACT_VERSION).toBe("vdb-backend-contract@0.2.0-rc.7");
     expect(SCHEMA_VERSION).toBe("2026.07.29.partner-approval-aal2-rc6");
     expect(pin.contractVersion).toBe(CONTRACT_VERSION);
     expect(pin.schemaVersion).toBe(SCHEMA_VERSION);
-    expect(pin.priorCompatiblePins).toEqual([]);
-    expect(pin.sourceOwnerCommit).toBe(
-      "ccdeb8455696bf4381f2e6805e57e41aa3e51ca4",
-    );
+    expect(pin.priorCompatiblePins).toEqual([
+      "vdb-backend-contract@0.2.0-rc.6",
+    ]);
     expect(STAGING_PROJECT_REF).toBe("qzekuvmgfekzsowdecyk");
     expect(PRODUCTION_PROJECT_REF).toBe("nhsrdnjfsxfikfbdmdfj");
   });

@@ -172,9 +172,10 @@ export function RegisterForm() {
           className="text-muted rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs leading-5"
           data-testid="individual-activation-notice"
         >
-          Indienen maakt u niet actief. Voor uiteindelijke activatie zijn onder
-          meer nodig: leeftijdsverificatie, identiteitsverificatie, particuliere
-          overeenkomst, payoutprofiel en goedkeuring door VDB.
+          Indienen maakt u niet actief. VDB beoordeelt uw gegevens
+          administratief. Particuliere overeenkomst, uitbetalingsprofiel en
+          goedkeuring blijven vereist vóór activatie. Er is geen automatische
+          ID-check, camera- of documentverificatie.
         </p>
       ) : null}
 
@@ -183,8 +184,10 @@ export function RegisterForm() {
           className="text-muted rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs leading-5"
           data-testid="business-activation-notice"
         >
-          Indienen maakt u niet actief. Bedrijfsverificatie, overeenkomst,
-          payoutprofiel en VDB-goedkeuring blijven vereist vóór activatie.
+          Indienen maakt u niet actief. Bedrijfsgegevens, overeenkomst,
+          uitbetalingsprofiel en VDB-goedkeuring blijven vereist vóór
+          activatie. Er is geen automatische ID-check, camera- of
+          documentverificatie.
         </p>
       ) : null}
 

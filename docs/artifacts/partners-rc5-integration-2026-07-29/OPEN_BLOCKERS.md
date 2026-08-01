@@ -6,7 +6,10 @@
 
 ## Residual / non-blocking (product & ops)
 
-1. **KYC-provider niet gekozen** — portal shows unavailable copy only.
+1. **Externe IDV/KYC-provider** — **de-scoped voor v1**. Geen Veriff/Sumsub/Onfido.
+   Portal toont administratieve partnercontrole-copy (geen automatische ID-check).
+   Activation checklist / identity-statusvelden blijven ongewijzigd tot aparte
+   contractsemantiek is goedgekeurd.
 2. **Juridische Partnerovereenkomsten niet definitief** — `legal_review_status=REQUIRED`; no binding acceptance simulated.
 3. **Fiscale behandeling niet definitief** — Owner legal/fiscal decisions; portal does not invent fiscal processing.
 4. **Payoutprovider/bankverificatie niet geïmplementeerd** — payout execution + Mollie remain fail-closed.

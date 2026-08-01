@@ -6,6 +6,7 @@ import {
   ACTIVATION_CHECK_COPY,
   PARTNER_FACING_STATUS_COPY,
 } from "@/lib/partners/activation";
+import { adminReviewStatusCopy } from "@/lib/partners/admin-review";
 import { loadPartnerActivationView } from "@/lib/partners/activation-loader";
 import { partnerTypeLabels } from "@/lib/validation/partner-type";
 import { decidePartnerCapability } from "@/lib/partners/capabilities";
@@ -72,6 +73,17 @@ export default async function OnboardingPage() {
                 : "Geblokkeerd tot Owner-status ACTIVE"}
             </dd>
           </div>
+          <div>
+            <dt className="text-muted">Administratieve partnercontrole</dt>
+            <dd data-testid="admin-review-status">
+              {
+                adminReviewStatusCopy(view.identityVerificationStatus).title
+              }
+            </dd>
+            <dd className="text-muted mt-1 text-xs leading-5">
+              {adminReviewStatusCopy(view.identityVerificationStatus).body}
+            </dd>
+          </div>
         </dl>
 
         {missing.length > 0 ? (
@@ -98,9 +110,10 @@ export default async function OnboardingPage() {
                     {code === "IDENTITY_NOT_VERIFIED" ? (
                       <p
                         className="mt-2 text-xs text-amber-200"
-                        data-testid="kyc-unavailable"
+                        data-testid="admin-review-notice"
                       >
-                        Identiteitsverificatie is nog niet beschikbaar
+                        Administratieve beoordeling door VDB — geen automatische
+                        ID-check of documentupload
                       </p>
                     ) : null}
                   </li>

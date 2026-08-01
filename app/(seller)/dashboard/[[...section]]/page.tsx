@@ -31,8 +31,8 @@ import { loadFailClosedFlags } from "@/lib/contract/flags";
 const titles: Record<string, [string, string]> = {
   profile: ["Mijn profiel", "Houd uw bedrijfs- en contactgegevens actueel."],
   verification: [
-    "Identiteitsverificatie",
-    "Voltooi de verificatie voordat u actief verkoopt.",
+    "Administratieve partnercontrole",
+    "Uw gegevens worden administratief beoordeeld. Er is geen automatische ID-check.",
   ],
   agreement: [
     "Partnerovereenkomst",
@@ -45,7 +45,10 @@ const titles: Record<string, [string, string]> = {
     "Commissies",
     "Commissies worden alleen vrijgegeven na betaling en levering.",
   ],
-  payouts: ["Uitbetalingen", "Uitbetalingen naar uw geverifieerde rekening."],
+  payouts: [
+    "Uitbetalingen",
+    "Uitbetalingen blijven uitgeschakeld tot een aparte releasegate.",
+  ],
   marketing: [
     "Marketingmateriaal",
     "Gebruik uitsluitend goedgekeurde VDB-materialen.",

@@ -34,7 +34,7 @@ Source of truth: `supabase/config.toml` + `.env.local` (gitignored) + `.env.exam
 | Authenticatie (e-mail/wachtwoord flows) | PARTIALLY IMPLEMENTED | Auth pages + SSR helpers; fixture users via Auth Admin API in DB tests |
 | MFA voor admins | PARTIALLY IMPLEMENTED | Niet afgedwongen in middleware |
 | Seller onboarding | REAL AND TESTED | DB flow: particular + bank/cash â†’ pending_review |
-| Identity verification | IMPLEMENTED WITH MOCK PROVIDER | manual_review path in DB flow |
+| Identity verification | V1 DE-SCOPED / FAIL-CLOSED | No external IDV; mock/provider quarantined; administrative review copy only |
 | Agreement signing | REAL AND TESTED | Acceptance row in DB flow |
 | Seller approval | REAL AND TESTED | Owner approve in DB flow |
 | Product catalog | REAL BUT NOT FULLY TESTED | Seed products used by order creation |
@@ -70,7 +70,7 @@ Source of truth: `supabase/config.toml` + `.env.local` (gitignored) + `.env.exam
 ## Volgende fase
 
 1. Admin-MFA afdwingen
-2. Mollie / Resend / KYC activeren
+2. Mollie / Resend activeren (aparte releasegates); externe IDV blijft v1-de-scoped
 3. Rapportage-exports
 4. Productie-Supabase, Vercel, domein
 5. Juridische/fiscale review + branding-asset
@@ -78,6 +78,7 @@ Source of truth: `supabase/config.toml` + `.env.local` (gitignored) + `.env.exam
 ## Bewust niet geclaimd
 
 - Productie-activatie
-- Live Mollie/Resend/KYC
+- Live Mollie/Resend
+- Live externe IDV/KYC (v1 de-scoped)
 - Live MFA enforcement
 - Bank/cash payout via UI (DB-pad wel bewezen; UI E2E stopt bij commission visibility na settlement)

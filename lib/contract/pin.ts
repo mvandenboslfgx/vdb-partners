@@ -1,7 +1,7 @@
-import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.6/pin.json";
-import roles from "@/contracts/vdb-backend-contract-0.2.0-rc.6/roles.json";
-import tables from "@/contracts/vdb-backend-contract-0.2.0-rc.6/tables.json";
-import featureFlags from "@/contracts/vdb-backend-contract-0.2.0-rc.6/feature-flags.json";
+import pin from "@/contracts/vdb-backend-contract-0.2.0-rc.7/pin.json";
+import roles from "@/contracts/vdb-backend-contract-0.2.0-rc.7/roles.json";
+import tables from "@/contracts/vdb-backend-contract-0.2.0-rc.7/tables.json";
+import featureFlags from "@/contracts/vdb-backend-contract-0.2.0-rc.7/feature-flags.json";
 
 export const CONTRACT_VERSION = pin.contractVersion;
 export const SCHEMA_VERSION = pin.schemaVersion;

@@ -63,8 +63,8 @@ export const ACTIVATION_CHECK_COPY: Record<
     selfService: false,
   },
   IDENTITY_NOT_VERIFIED: {
-    title: "Identiteitsverificatie",
-    body: "Identiteitsverificatie is nog niet beschikbaar. Publieke onboarding is nog niet volledig geopend.",
+    title: "Administratieve partnercontrole",
+    body: "Uw partnergegevens worden administratief beoordeeld door VDB. Er is geen automatische ID-check, camera-opname, documentupload of selfiecontrole.",
     selfService: false,
   },
   BUSINESS_NOT_VERIFIED: {
@@ -183,8 +183,8 @@ export const PARTNER_FACING_STATUS_COPY: Record<
     body: "VDB beoordeelt uw aanvraag. Verkoopfunctionaliteit blijft geblokkeerd tot uw status ACTIVE is.",
   },
   compliance_incomplete: {
-    title: "Compliance incompleet",
-    body: "Goedkeuring alleen is niet voldoende. Rond de ontbrekende verificatie- en overeenkomststappen af voordat activatie mogelijk is.",
+    title: "Controles incompleet",
+    body: "Goedkeuring alleen is niet voldoende. Ontbrekende administratieve controles en overeenkomststappen blokkeren activatie. Er is geen automatische ID-check.",
   },
   active: {
     title: "Actief",
@@ -199,8 +199,8 @@ export const PARTNER_FACING_STATUS_COPY: Record<
     body: "Uw partnerprofiel is geschorst of ingetrokken. Verkoopacties zijn geblokkeerd.",
   },
   reverification_required: {
-    title: "Herverificatie vereist",
-    body: "Er is opnieuw verificatie nodig voordat uw account volledig actief kan blijven.",
+    title: "Nieuwe administratieve controle vereist",
+    body: "Er is opnieuw een administratieve beoordeling nodig voordat uw account volledig actief kan blijven. Er is geen automatische ID-check.",
   },
   unknown_safe: {
     title: "Status niet beschikbaar",
