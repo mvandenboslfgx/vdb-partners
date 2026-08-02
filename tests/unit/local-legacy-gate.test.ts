@@ -47,7 +47,7 @@ describe("local legacy seller domain gate", () => {
   it("blocks staging and production remote URLs for seller_* workflows", () => {
     expect(() =>
       assertLocalLegacySellerDomainAllowed(
-        "https://qzekuvmgfekzsowdecyk.supabase.co",
+        "https://kjricvicakvsreuytvra.supabase.co",
       ),
     ).toThrow(/disabled against Owner RC2/);
     expect(() =>

@@ -5,7 +5,7 @@
     "vdb-backend-contract@0.2.0-rc.6"
   ],
   "schemaPinNote": "RC7 adds staff_attest_partner_admin_review (administrative partner review). Read RPC schema stamps remain partner-approval-aal2-rc6. No production apply. Payouts fail-closed.",
-  "stagingProjectRef": "qzekuvmgfekzsowdecyk",
+  "stagingProjectRef": "kjricvicakvsreuytvra",
   "productionProjectRef": "nhsrdnjfsxfikfbdmdfj",
   "canonicalProductionUrl": "https://partners.vdbdigital.nl",
   "repositoryRole": "PARTNER_CLIENT",

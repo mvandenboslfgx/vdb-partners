@@ -41,7 +41,7 @@ describe("contract pin RC7", () => {
     expect(pin.priorCompatiblePins).toEqual([
       "vdb-backend-contract@0.2.0-rc.6",
     ]);
-    expect(STAGING_PROJECT_REF).toBe("qzekuvmgfekzsowdecyk");
+    expect(STAGING_PROJECT_REF).toBe("kjricvicakvsreuytvra");
     expect(PRODUCTION_PROJECT_REF).toBe("nhsrdnjfsxfikfbdmdfj");
   });
 
@@ -106,6 +106,15 @@ describe("assertExpectedSupabaseEnvironment", () => {
         actualSupabaseUrl: productionUrl,
       }),
     ).toThrow(/refused in preview/);
+  });
+
+  it("preview + legacy staging-ref → BLOCK", () => {
+    expect(() =>
+      assertExpectedSupabaseEnvironment({
+        deploymentEnvironment: "preview",
+        actualSupabaseUrl: "https://qzekuvmgfekzsowdecyk.supabase.co",
+      }),
+    ).toThrow(/requires Supabase project/);
   });
 
   it("staging + staging-ref → PASS", () => {
