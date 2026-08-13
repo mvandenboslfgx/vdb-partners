@@ -67,8 +67,16 @@ export function getEnv(): Env {
       parsed.data.NEXT_PUBLIC_APP_URL ??
       "http://localhost:3000",
   };
-  assertPartnerSupabaseEnvironment(env.NEXT_PUBLIC_SUPABASE_URL);
-  if (shouldEnforce(env)) {
+  const enforce = shouldEnforce(env);
+
+  // Preview builds are allowed to compile before runtime secrets are attached.
+  // Once a Supabase URL exists, always validate that it points at the expected
+  // environment. Production/FORCE_ENV_VALIDATION remains strictly fail-closed.
+  if (env.NEXT_PUBLIC_SUPABASE_URL || enforce) {
+    assertPartnerSupabaseEnvironment(env.NEXT_PUBLIC_SUPABASE_URL);
+  }
+
+  if (enforce) {
     for (const key of requiredInProduction) {
       if (!env[key])
         throw new Error(
