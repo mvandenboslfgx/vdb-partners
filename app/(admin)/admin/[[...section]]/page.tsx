@@ -1,13 +1,17 @@
 import { PageHeader } from "@/components/brand";
 import { Card, EmptyState, Table } from "@/components/ui";
 import { StatsCard, StatusBadge } from "@/components/dashboard";
+import { AdminReviewPanel } from "@/components/admin/admin-review-panel";
 import { requireRole } from "@/lib/auth/require-auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const names: Record<string, [string, string]> = {
   sellers: ["Partners", "Beheer partnerprofielen en goedkeuringen."],
   applications: ["Aanmeldingen", "Nieuwe partneraanmeldingen ter beoordeling."],
-  verifications: ["Verificaties", "Identiteitscontroles en uitzonderingen."],
+  verifications: [
+    "Partnercontroles",
+    "Administratieve partnerbeoordeling en uitzonderingen. Geen automatische ID-check.",
+  ],
   agreements: ["Overeenkomsten", "Status van partnerovereenkomsten."],
   products: ["Producten", "Productcatalogus en commissietarieven."],
   orders: ["Orders", "Orders en leveringsstatussen."],
@@ -142,6 +146,27 @@ export default async function AdminPage({
         {applications}
       </>
     );
+  if (slug === "verifications") {
+    const { data: reviewPartners, error: reviewError } = await db
+      .from("partner_profiles")
+      .select(
+        "id, display_name, legal_name, identity_verification_status, identity_verified_at, status",
+      )
+      .order("updated_at", { ascending: false })
+      .limit(40);
+    if (reviewError) throw reviewError;
+    return (
+      <>
+        <PageHeader eyebrow="Beheer" title={title} description={description} />
+        <Card className="p-6">
+          <p className="text-gold text-xs tracking-[.16em] uppercase">
+            Administratieve partnercontrole
+          </p>
+          <AdminReviewPanel partners={reviewPartners ?? []} />
+        </Card>
+      </>
+    );
+  }
   if (slug === "orders") {
     const { data: sales, error } = await db
       .from("partner_sales")

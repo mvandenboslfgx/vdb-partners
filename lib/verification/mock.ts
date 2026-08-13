@@ -1,12 +1,35 @@
-import { randomUUID } from "crypto";
-import type { VerificationProvider, VerificationSession, VerificationStatus } from "@/lib/verification/types";
+/**
+ * QUARANTINED — not part of the active Partners v1 product path.
+ * No runtime importer references MockVerificationProvider (verified Phase 1).
+ * Kept only so accidental imports fail closed instead of simulating IDV success.
+ */
+import type {
+  VerificationProvider,
+  VerificationSession,
+  VerificationStatus,
+} from "@/lib/verification/types";
+
+function quarantined(): never {
+  throw new Error(
+    "QUARANTINED: MockVerificationProvider is disabled for Partners v1 (no automatic IDV)",
+  );
+}
 
 export class MockVerificationProvider implements VerificationProvider {
-  private sessions = new Map<string, VerificationSession>();
-  async start(input: { profileId: string; returnUrl: string }) {
-    const id = randomUUID(), session = { id, status: "pending" as const, url: `${input.returnUrl}?verification=${id}` };
-    this.sessions.set(id, session); return session;
+  async start(_input: {
+    profileId: string;
+    returnUrl: string;
+  }): Promise<VerificationSession> {
+    void _input;
+    return quarantined();
   }
-  async getStatus(id: string) { return this.sessions.get(id) ?? { id, status: "not_started" }; }
-  setStatus(id: string, status: VerificationStatus) { const current = this.sessions.get(id); if (!current) throw new Error("Unknown verification session"); this.sessions.set(id, { ...current, status }); }
+  async getStatus(_id: string): Promise<VerificationSession> {
+    void _id;
+    return quarantined();
+  }
+  setStatus(_id: string, _status: VerificationStatus): void {
+    void _id;
+    void _status;
+    quarantined();
+  }
 }

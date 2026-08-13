@@ -20,7 +20,7 @@ export const adminLinks = [
   ["Overzicht", "/admin"],
   ["Partners", "/admin/sellers"],
   ["Aanmeldingen", "/admin/applications"],
-  ["Verificaties", "/admin/verifications"],
+  ["Partnercontroles", "/admin/verifications"],
   ["Overeenkomsten", "/admin/agreements"],
   ["Producten", "/admin/products"],
   ["Orders", "/admin/orders"],

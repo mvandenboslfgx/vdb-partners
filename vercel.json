@@ -3,5 +3,10 @@
   "framework": "nextjs",
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
-  "ignoreCommand": "node -e \"process.exit(process.env.VERCEL_ENV==='production'?0:1)\""
+  "ignoreCommand": "node -e \"process.exit(process.env.VERCEL_ENV==='production'?0:1)\"",
+  "git": {
+    "deploymentEnabled": {
+      "fix/rc6-partners-idv-desccope-f1": false
+    }
+  }
 }

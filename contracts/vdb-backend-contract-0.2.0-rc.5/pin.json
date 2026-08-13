@@ -1,0 +1,18 @@
+{
+  "contractVersion": "vdb-backend-contract@0.2.0-rc.5",
+  "schemaVersion": "2026.07.29.partner-identity-directory-rc5",
+  "priorCompatiblePins": [
+    "vdb-backend-contract@0.2.0-rc.3",
+    "2026.07.25.messaging-support-appointments-rc3",
+    "vdb-backend-contract@0.2.0-rc.2",
+    "2026.07.27.financial-concurrency-rc2"
+  ],
+  "schemaPinNote": "Partner identity directory RC5: typed INDIVIDUAL|BUSINESS intake, activation checklist, agreement acceptances, admin directory detail RPCs. Retains RC3 messaging/support and RC2 financial concurrency.",
+  "stagingProjectRef": "qzekuvmgfekzsowdecyk",
+  "productionProjectRef": "nhsrdnjfsxfikfbdmdfj",
+  "canonicalProductionUrl": "https://partners.vdbdigital.nl",
+  "repositoryRole": "PARTNER_CLIENT",
+  "bundleSha256": "304f83cdc7ff98a525854d6be1a17bb8b5723c1dbcb2c44a5f35451a1cbd9f54",
+  "sourceOwnerCommit": "8264893c25ba6438393c0469fcc623c68fbfa93d",
+  "sourceOwnerPath": "contracts/releases/vdb-backend-contract-0.2.0-rc.5"
+}

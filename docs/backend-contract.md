@@ -4,19 +4,21 @@ Versioned contract between **VDB Digital 2.0** (publisher) and clients (Mobile, 
 
 ## Contract identity (this repo)
 
-| Field                              | Value                                                                            |
-| ---------------------------------- | -------------------------------------------------------------------------------- |
-| `REPOSITORY_ROLE`                  | `PARTNER_CLIENT`                                                                 |
-| Contract package                   | `vdb-backend-contract@0.2.0-rc.3`                                                |
-| `schemaVersion`                    | `2026.07.25.messaging-support-appointments-rc3`                                  |
-| Partner surface compatibility      | Embeds non-breaking `0.2.0-rc.1` partner RPCs/tables + RC2 financial concurrency |
-| Env pin                            | `BACKEND_CONTRACT_VERSION=vdb-backend-contract@0.2.0-rc.3`                       |
-| Source of generated types (target) | Canonical backend package / export from VDB Digital 2.0                          |
-| Source of types (today)            | Local `supabase/migrations/*` in this repo (proposal + local proof only)         |
+| Field                              | Value                                                                                          |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `REPOSITORY_ROLE`                  | `PARTNER_CLIENT`                                                                               |
+| Contract package                   | `vdb-backend-contract@0.2.0-rc.6`                                                               |
+| `schemaVersion`                    | `2026.07.29.partner-approval-aal2-rc6`                                                          |
+| Partner surface compatibility      | AAL2 partner approval + RC5 identity directory; embeds RC3 messaging/support + RC2 concurrency |
+| Env pin                            | `BACKEND_CONTRACT_VERSION=vdb-backend-contract@0.2.0-rc.6`                                      |
+| Owner baseline                     | `ccdeb8455696bf4381f2e6805e57e41aa3e51ca4`                                                      |
+| Live fallback                      | None — fail-closed on RC5/RC4/any contract or schema drift                                     |
+| Source of generated types (target) | Canonical backend package / export from VDB Digital 2.0                                        |
+| Source of types (today)            | Local `supabase/migrations/*` in this repo (proposal + local proof only)                       |
 
 Local migrations under `supabase/migrations` prove Partner behaviour in isolation. Shared staging/production must use the canonical schema published by VDB Digital 2.0 at the same `schemaVersion`.
 
-**Do not publish Mobile `0.1.1` or historical owner `0.1.0` as the shared staging pin.**
+**Do not publish Mobile `0.1.1`, historical owner `0.1.0`, or live RC5/RC4 pins as the shared staging pin.**
 
 ## Required contract contents (target)
 
@@ -28,7 +30,14 @@ Local migrations under `supabase/migrations` prove Partner behaviour in isolatio
 6. Stable error codes
 7. `schemaVersion` string
 
-## Role mapping (Owner RC3 — runtime, same as RC2 auth)
+## Partner types (Owner RC6 / identity from RC5)
+
+Canonical Owner types: `INDIVIDUAL` (Particulier) and `BUSINESS` (Zakelijk).
+Legacy UI values map as `particular → INDIVIDUAL`, `sole_trader|company → BUSINESS`.
+Type is never inferred from company name or KvK. Staff approval alone never sets `ACTIVE`.
+`review_partner_application` requires server-side AAL2 before any approve/reject mutation.
+
+## Role mapping (Owner RC6 — runtime, same shared roles as RC2/RC3/RC5)
 
 | Shared role       | Owner encoding                      | Partner Portal route        |
 | ----------------- | ----------------------------------- | --------------------------- |
@@ -52,7 +61,7 @@ Local migrations under `supabase/migrations` prove Partner behaviour in isolatio
 | support_messages      | `portal_support_replies`     |
 | appointments          | `portal_appointments`        |
 
-Fail-closed flags (default false): `mollie_checkout`, `digital_product_checkout`, `partner_payouts`, `messaging_realtime`, `support_internal_notes_rpc`, `appointments_booking`.
+Fail-closed flags (default false): `mollie_checkout`, `digital_product_checkout`, `partner_payouts`, `messaging_realtime`, `support_internal_notes_rpc`, `appointments_booking`, `partner_compliance_fixtures`.
 
 ## Domain object mapping (local proposal → Owner RC3)
 

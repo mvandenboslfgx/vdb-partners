@@ -1,0 +1,14 @@
+{
+  "contractVersion": "vdb-backend-contract@0.2.0-rc.7",
+  "schemaVersion": "2026.07.29.partner-approval-aal2-rc6",
+  "priorCompatiblePins": [
+    "vdb-backend-contract@0.2.0-rc.6"
+  ],
+  "schemaPinNote": "RC7 adds staff_attest_partner_admin_review (administrative partner review). Read RPC schema stamps remain partner-approval-aal2-rc6. No production apply. Payouts fail-closed.",
+  "stagingProjectRef": "kjricvicakvsreuytvra",
+  "productionProjectRef": "nhsrdnjfsxfikfbdmdfj",
+  "canonicalProductionUrl": "https://partners.vdbdigital.nl",
+  "repositoryRole": "PARTNER_CLIENT",
+  "bundleSha256": "8f80716becdd92a6de1a78571ca85bcfc4c90de2ab5d9295b2bfae1585ff602c",
+  "sourceOwnerPath": "contracts/releases/vdb-backend-contract-0.2.0-rc.7"
+}

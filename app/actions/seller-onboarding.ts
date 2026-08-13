@@ -4,7 +4,6 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { assertLocalLegacySellerDomainAllowed } from "@/lib/contract/local-legacy";
-import { getFeatureFlags } from "@/lib/feature-flags";
 import { generateSellerCode } from "@/lib/referrals/codes";
 import { encrypt } from "@/lib/security/encryption";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -163,28 +162,15 @@ export async function savePayoutPreference(input: unknown) {
   return { ok: true };
 }
 
+/**
+ * QUARANTINED — legacy seller_profiles path; not used by RC5 Owner partner onboarding.
+ * Partners v1 has no automatic ID-check, camera IDV, document upload, or selfie flow.
+ * Calling this must fail closed.
+ */
 export async function startVerification() {
-  const profile = await requireAuth();
-  const { db, seller } = await sellerForUser(profile.id);
-  const flags = await getFeatureFlags();
-  const status = flags.identity_verification_enabled
-    ? "pending"
-    : "manual_review";
-  const { error } = await db
-    .from("seller_verifications")
-    .upsert(
-      {
-        seller_id: seller.id,
-        verification_type: "identity",
-        status,
-        provider: flags.identity_verification_enabled
-          ? "configured_provider"
-          : "manual",
-      },
-      { onConflict: "seller_id,verification_type" },
-    );
-  if (error) throw error;
-  return { status };
+  throw new Error(
+    "QUARANTINED: automatic identity verification is not part of Partners v1",
+  );
 }
 
 export async function acceptAgreement(versionId: string, name: string) {

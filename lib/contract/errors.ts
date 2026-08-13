@@ -10,7 +10,11 @@ export type PartnerPortalErrorCode =
   | "FORBIDDEN"
   | "IDENTITY_INCOMPLETE"
   | "IDENTITY_LOOKUP_FAILED"
-  | "CONTRACT_SURFACE_UNAVAILABLE";
+  | "CONTRACT_SURFACE_UNAVAILABLE"
+  | "VALIDATION_FAILED"
+  | "ACTIVATION_DENIED"
+  | "FEATURE_DISABLED"
+  | "CAPABILITY_DENIED";
 
 export class PartnerPortalError extends Error {
   readonly code: PartnerPortalErrorCode;
@@ -31,6 +35,12 @@ export function mapBackendErrorMessage(
     return "PARTNER_LEAD_ALREADY_CONVERTED";
   if (message.includes("PARTNER_INSUFFICIENT_LIABILITY"))
     return "PARTNER_INSUFFICIENT_LIABILITY";
+  if (message.includes("ACTIVATION_DENIED")) return "ACTIVATION_DENIED";
+  if (message.includes("VALIDATION_FAILED")) return "VALIDATION_FAILED";
+  if (message.includes("FEATURE_DISABLED")) return "FEATURE_DISABLED";
+  if (message.includes("CAPABILITY_DENIED")) return "CAPABILITY_DENIED";
+  if (message.includes("FORBIDDEN") || message.includes("AUTH_NO_ACCESS"))
+    return "FORBIDDEN";
   return null;
 }
 
@@ -53,6 +63,14 @@ export function userMessageForPartnerError(
       return "Kon uw accountstatus niet laden. Probeer het later opnieuw.";
     case "CONTRACT_SURFACE_UNAVAILABLE":
       return "Deze functie is niet beschikbaar op de huidige backendversie.";
+    case "VALIDATION_FAILED":
+      return "De ingevoerde gegevens zijn ongeldig. Controleer partnertype, bedrijfsnaam en KvK.";
+    case "ACTIVATION_DENIED":
+      return "Activatie is nog niet mogelijk. Bekijk de ontbrekende stappen op de onboardingpagina.";
+    case "FEATURE_DISABLED":
+      return "Deze functie is momenteel uitgeschakeld.";
+    case "CAPABILITY_DENIED":
+      return "Deze actie is niet beschikbaar voor uw huidige partnerstatus.";
     default:
       return "Er is een gecontroleerde fout opgetreden.";
   }

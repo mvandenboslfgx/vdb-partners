@@ -1,0 +1,397 @@
+{
+  "at": "2026-07-29T07:22:10.739Z",
+  "contract": "vdb-backend-contract@0.2.0-rc.5",
+  "schemaVersion": "2026.07.29.partner-identity-directory-rc5",
+  "stagingRef": "qzekuvmgfekzsowdecyk",
+  "productionRefDenied": "nhsrdnjfsxfikfbdmdfj",
+  "productionUntouched": true,
+  "cases": [
+    {
+      "name": "env_ref_guard",
+      "ok": true,
+      "detail": "qzekuvmgfekzsowdecyk"
+    },
+    {
+      "name": "local_contract_pin",
+      "ok": true,
+      "detail": {
+        "contract": "vdb-backend-contract@0.2.0-rc.5",
+        "schema": "2026.07.29.partner-identity-directory-rc5"
+      }
+    },
+    {
+      "name": "production_denylist",
+      "ok": true,
+      "detail": {
+        "productionRef": "nhsrdnjfsxfikfbdmdfj"
+      }
+    },
+    {
+      "name": "login_partner_a",
+      "ok": true,
+      "detail": {
+        "emailMasked": "st***@example.test",
+        "userFingerprint": "8bcfe003490c",
+        "partnerStatus": "ACTIVE",
+        "partnerType": null,
+        "catalogCount": 11,
+        "catalogError": null,
+        "leadError": "PRODUCT_NOT_FOUND",
+        "saleError": "FORBIDDEN",
+        "payoutError": "FEATURE_NOT_CONFIGURED: partner payouts are currently disabled",
+        "checklistError": null,
+        "checklistSchema": "2026.07.29.partner-identity-directory-rc5",
+        "checklist": {
+          "checks": {
+            "age_verified": false,
+            "not_suspended": true,
+            "staff_approved": false,
+            "identity_verified": false,
+            "partner_type_known": false,
+            "business_verified_or_na": true,
+            "payout_profile_approved": false,
+            "agreement_accepted_current": false
+          },
+          "missing": [
+            "PARTNER_TYPE_UNKNOWN",
+            "STAFF_APPROVAL_MISSING",
+            "AGE_NOT_VERIFIED",
+            "IDENTITY_NOT_VERIFIED",
+            "AGREEMENT_NOT_ACCEPTED",
+            "PAYOUT_PROFILE_NOT_APPROVED"
+          ],
+          "partner_id": "e8374bc0…",
+          "can_activate": false,
+          "partner_type": null,
+          "profile_status": "ACTIVE",
+          "schema_version": "2026.07.29.partner-identity-directory-rc5"
+        },
+        "internalNotesVisible": false,
+        "internalNoteRpcError": "FORBIDDEN",
+        "otherPartnerRows": 0
+      }
+    },
+    {
+      "name": "catalog_product_count",
+      "ok": true,
+      "detail": {
+        "count": 11,
+        "expected": 11
+      }
+    },
+    {
+      "name": "login_partner_b",
+      "ok": true,
+      "detail": {
+        "emailMasked": "st***@example.test",
+        "userFingerprint": "4641eef424f2",
+        "partnerStatus": "ACTIVE",
+        "partnerType": null,
+        "catalogCount": 11,
+        "catalogError": null,
+        "leadError": "PRODUCT_NOT_FOUND",
+        "saleError": "FORBIDDEN",
+        "payoutError": "FEATURE_NOT_CONFIGURED: partner payouts are currently disabled",
+        "checklistError": null,
+        "checklistSchema": "2026.07.29.partner-identity-directory-rc5",
+        "checklist": {
+          "checks": {
+            "age_verified": false,
+            "not_suspended": true,
+            "staff_approved": false,
+            "identity_verified": false,
+            "partner_type_known": false,
+            "business_verified_or_na": true,
+            "payout_profile_approved": false,
+            "agreement_accepted_current": false
+          },
+          "missing": [
+            "PARTNER_TYPE_UNKNOWN",
+            "STAFF_APPROVAL_MISSING",
+            "AGE_NOT_VERIFIED",
+            "IDENTITY_NOT_VERIFIED",
+            "AGREEMENT_NOT_ACCEPTED",
+            "PAYOUT_PROFILE_NOT_APPROVED"
+          ],
+          "partner_id": "473c484c…",
+          "can_activate": false,
+          "partner_type": null,
+          "profile_status": "ACTIVE",
+          "schema_version": "2026.07.29.partner-identity-directory-rc5"
+        },
+        "internalNotesVisible": false,
+        "internalNoteRpcError": "FORBIDDEN",
+        "otherPartnerRows": 0
+      }
+    },
+    {
+      "name": "login_partner_pending",
+      "ok": true,
+      "detail": {
+        "emailMasked": "st***@example.test",
+        "userFingerprint": "1804aaa27b07",
+        "partnerStatus": "PENDING",
+        "partnerType": null,
+        "catalogCount": null,
+        "catalogError": "FORBIDDEN",
+        "leadError": "FORBIDDEN",
+        "saleError": "FORBIDDEN",
+        "payoutError": "FEATURE_NOT_CONFIGURED: partner payouts are currently disabled",
+        "checklistError": null,
+        "checklistSchema": "2026.07.29.partner-identity-directory-rc5",
+        "checklist": {
+          "checks": {
+            "age_verified": false,
+            "not_suspended": true,
+            "staff_approved": false,
+            "identity_verified": false,
+            "partner_type_known": false,
+            "business_verified_or_na": true,
+            "payout_profile_approved": false,
+            "agreement_accepted_current": false
+          },
+          "missing": [
+            "PARTNER_TYPE_UNKNOWN",
+            "STAFF_APPROVAL_MISSING",
+            "AGE_NOT_VERIFIED",
+            "IDENTITY_NOT_VERIFIED",
+            "AGREEMENT_NOT_ACCEPTED",
+            "PAYOUT_PROFILE_NOT_APPROVED"
+          ],
+          "partner_id": "6f5505c9…",
+          "can_activate": false,
+          "partner_type": null,
+          "profile_status": "PENDING",
+          "schema_version": "2026.07.29.partner-identity-directory-rc5"
+        },
+        "internalNotesVisible": false,
+        "internalNoteRpcError": "FORBIDDEN",
+        "otherPartnerRows": 0
+      }
+    },
+    {
+      "name": "login_customer_a",
+      "ok": true,
+      "detail": {
+        "emailMasked": "st***@example.test",
+        "userFingerprint": "38bf7983af43",
+        "partnerStatus": null,
+        "partnerType": null,
+        "catalogCount": null,
+        "catalogError": "FORBIDDEN",
+        "leadError": "FORBIDDEN",
+        "saleError": "FORBIDDEN",
+        "payoutError": "FEATURE_NOT_CONFIGURED: partner payouts are currently disabled",
+        "checklistError": null,
+        "checklistSchema": null,
+        "checklist": null,
+        "internalNotesVisible": false,
+        "internalNoteRpcError": "FORBIDDEN",
+        "otherPartnerRows": 0
+      }
+    },
+    {
+      "name": "login_staff",
+      "ok": true,
+      "detail": {
+        "emailMasked": "st***@example.test",
+        "userFingerprint": "6dce0425dcd0",
+        "partnerStatus": null,
+        "partnerType": null,
+        "catalogCount": null,
+        "catalogError": "FORBIDDEN",
+        "leadError": "FORBIDDEN",
+        "saleError": "NOT_FOUND",
+        "payoutError": "FEATURE_NOT_CONFIGURED: partner payouts are currently disabled",
+        "checklistError": null,
+        "checklistSchema": null,
+        "checklist": null,
+        "internalNotesVisible": true,
+        "internalNoteRpcError": null,
+        "otherPartnerRows": 5
+      }
+    },
+    {
+      "name": "login_admin",
+      "ok": true,
+      "detail": {
+        "emailMasked": "st***@example.test",
+        "userFingerprint": "20b2048c8bb1",
+        "partnerStatus": null,
+        "partnerType": null,
+        "catalogCount": null,
+        "catalogError": "FORBIDDEN",
+        "leadError": "FORBIDDEN",
+        "saleError": "NOT_FOUND",
+        "payoutError": "FEATURE_NOT_CONFIGURED: partner payouts are currently disabled",
+        "checklistError": null,
+        "checklistSchema": null,
+        "checklist": null,
+        "internalNotesVisible": true,
+        "internalNoteRpcError": null,
+        "otherPartnerRows": 5
+      }
+    },
+    {
+      "name": "suspended_fixture",
+      "ok": true,
+      "detail": {
+        "source": "owner_suspended_vault",
+        "vaultPath": "C:/Users/XXX/.vdb-vault/partner-staging-suspended-rc5.env",
+        "fixtureKind": "SUSPENDED_PARTNER_RC5",
+        "fingerprint": "099764f54e18",
+        "partnerIdMasked": "3754b24d…",
+        "emailMasked": "st***@example.test",
+        "userFingerprint": "991e4beca9ac",
+        "partnerFingerprint": "1d53478116be",
+        "status": "SUSPENDED",
+        "statusRelogin": "SUSPENDED",
+        "payoutEligible": false,
+        "sessionPresentBeforeLogout": true,
+        "catalogCount": null,
+        "catalogError": "FORBIDDEN",
+        "leadError": "FORBIDDEN",
+        "saleError": "FORBIDDEN",
+        "payoutError": "FEATURE_NOT_CONFIGURED: partner payouts are currently disabled",
+        "financialError": "FORBIDDEN",
+        "checklistError": null,
+        "checklist": {
+          "checks": {
+            "age_verified": false,
+            "not_suspended": false,
+            "staff_approved": false,
+            "identity_verified": false,
+            "partner_type_known": false,
+            "business_verified_or_na": true,
+            "payout_profile_approved": false,
+            "agreement_accepted_current": false
+          },
+          "missing": [
+            "PARTNER_TYPE_UNKNOWN",
+            "PARTNER_SUSPENDED",
+            "STAFF_APPROVAL_MISSING",
+            "AGE_NOT_VERIFIED",
+            "IDENTITY_NOT_VERIFIED",
+            "AGREEMENT_NOT_ACCEPTED",
+            "PAYOUT_PROFILE_NOT_APPROVED"
+          ],
+          "partner_id": "3754b24d…",
+          "can_activate": false,
+          "partner_type": null,
+          "profile_status": "SUSPENDED",
+          "schema_version": "2026.07.29.partner-identity-directory-rc5"
+        },
+        "internalNotesVisible": false,
+        "internalNoteRpcError": "FORBIDDEN",
+        "otherPartnerRows": 0,
+        "checks": {
+          "statusOk": true,
+          "payoutEligibleFalse": true,
+          "catalogDenied": true,
+          "leadDenied": true,
+          "saleDenied": true,
+          "payoutDenied": true,
+          "noInternal": true,
+          "internalRpcDenied": true,
+          "crossPartnerDeny": true,
+          "fingerprintOk": true,
+          "kindOk": true,
+          "reLoginStillSuspended": true
+        }
+      }
+    },
+    {
+      "name": "suspended_login",
+      "ok": true,
+      "detail": {
+        "status": "SUSPENDED",
+        "fingerprint": "099764f54e18"
+      }
+    },
+    {
+      "name": "suspended_relogin",
+      "ok": true,
+      "detail": {
+        "statusRelogin": "SUSPENDED"
+      }
+    },
+    {
+      "name": "suspended_catalog_deny",
+      "ok": true,
+      "detail": {
+        "catalogCount": null,
+        "catalogError": "FORBIDDEN"
+      }
+    },
+    {
+      "name": "suspended_lead_deny",
+      "ok": true,
+      "detail": {
+        "leadError": "FORBIDDEN"
+      }
+    },
+    {
+      "name": "suspended_sale_deny",
+      "ok": true,
+      "detail": {
+        "saleError": "FORBIDDEN"
+      }
+    },
+    {
+      "name": "suspended_payout_deny",
+      "ok": true,
+      "detail": {
+        "payoutError": "FEATURE_NOT_CONFIGURED: partner payouts are currently disabled"
+      }
+    },
+    {
+      "name": "suspended_support_no_internal",
+      "ok": true,
+      "detail": {
+        "internalNotesVisible": false,
+        "internalNoteRpcError": "FORBIDDEN"
+      }
+    },
+    {
+      "name": "suspended_cross_partner_deny",
+      "ok": true,
+      "detail": {
+        "otherPartnerRows": 0
+      }
+    },
+    {
+      "name": "account_session_isolation",
+      "ok": true,
+      "detail": {
+        "activeBeforeStatus": "ACTIVE",
+        "activeCatalogBefore": 11,
+        "sessionClearedAfterLogout": true,
+        "suspendedAfterSwitch": "SUSPENDED",
+        "suspendedCatalogCount": null,
+        "suspendedCatalogError": "FORBIDDEN",
+        "activeRestoredStatus": "ACTIVE",
+        "activeRestoredCatalog": 11,
+        "partnerAtoBIsolated": true,
+        "partnerBOtherRows": 0
+      }
+    },
+    {
+      "name": "anon_partner_leads_deny",
+      "ok": true,
+      "detail": {
+        "error": "permission denied for table partner_leads",
+        "rows": 0
+      }
+    },
+    {
+      "name": "anon_catalog_deny",
+      "ok": true,
+      "detail": {
+        "error": "permission denied for function list_partner_catalog",
+        "count": null
+      }
+    }
+  ],
+  "blockers": [],
+  "pass": true
+}

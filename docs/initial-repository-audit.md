@@ -55,7 +55,7 @@ Zie `docs/implementation-reality-audit.md` voor de eindstatus per module.
 - Productie-Supabase projectkoppeling
 - Live Mollie API-keys / webhooks
 - Live Resend-domein
-- Live identity/KYC provider
+- Live externe IDV/KYC provider (v1 de-scoped; niet als v1-releasegate)
 - DNS `partners.vdbdigital.nl`
 - Productie-secrets op Vercel
 

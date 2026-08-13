@@ -1,17 +1,22 @@
 import Link from "next/link";
-import { Copy, ExternalLink, Plus } from "lucide-react";
+import { Copy, Plus } from "lucide-react";
 import { PageHeader, PaymentRuleBanner } from "@/components/brand";
-import { SellerSaleForm } from "@/components/portal/seller-sale-form";
 import { EmptyState, Button, Card, Table } from "@/components/ui";
 import { StatsCard, StatusBadge } from "@/components/dashboard";
 import { requireRole } from "@/lib/auth/require-auth";
 import {
   loadPartnerCommissions,
+  loadPartnerCatalog,
   loadPartnerDashboardSummary,
   loadPartnerLeads,
   loadPartnerPayouts,
   loadPartnerSales,
 } from "@/lib/partners/loaders";
+import { PartnerProductLeadForm } from "@/components/portal/partner-product-lead-form";
+import {
+  PartnerSupportCreateForm,
+  PartnerSupportReplyForm,
+} from "@/components/portal/partner-support-forms";
 import {
   loadConversationMessages,
   loadConversationReadState,
@@ -26,8 +31,8 @@ import { loadFailClosedFlags } from "@/lib/contract/flags";
 const titles: Record<string, [string, string]> = {
   profile: ["Mijn profiel", "Houd uw bedrijfs- en contactgegevens actueel."],
   verification: [
-    "Identiteitsverificatie",
-    "Voltooi de verificatie voordat u actief verkoopt.",
+    "Administratieve partnercontrole",
+    "Uw gegevens worden administratief beoordeeld. Er is geen automatische ID-check.",
   ],
   agreement: [
     "Partnerovereenkomst",
@@ -40,7 +45,10 @@ const titles: Record<string, [string, string]> = {
     "Commissies",
     "Commissies worden alleen vrijgegeven na betaling en levering.",
   ],
-  payouts: ["Uitbetalingen", "Uitbetalingen naar uw geverifieerde rekening."],
+  payouts: [
+    "Uitbetalingen",
+    "Uitbetalingen blijven uitgeschakeld tot een aparte releasegate.",
+  ],
   marketing: [
     "Marketingmateriaal",
     "Gebruik uitsluitend goedgekeurde VDB-materialen.",
@@ -168,12 +176,222 @@ export default async function SellerPage({
       <>
         <PageHeader
           title="Nieuwe verkoop"
-          description="Registreer een verkoop. Betaling en commissie worden uitsluitend door VDB bevestigd."
+          description="Live checkout/Mollie blijft fail-closed. Gebruik Producten → lead/offerteaanvraag. De klant betaalt altijd aan VDB Digital."
         />
-        <Card className="max-w-2xl p-6">
-          <SellerSaleForm />
+        <Card className="max-w-2xl space-y-4 p-6 text-sm">
+          <p>
+            Partners registreren geen eigen checkout of factuur voor
+            VDB-producten. Start via{" "}
+            <Link className="text-gold" href="/dashboard/products">
+              Producten
+            </Link>{" "}
+            (Owner-catalogus).
+          </p>
+          <PaymentRuleBanner />
         </Card>
-        <PaymentRuleBanner className="mt-6" />
+      </>
+    );
+  }
+
+  if (slug === "products") {
+    let catalog: Awaited<ReturnType<typeof loadPartnerCatalog>> = [];
+    let catalogError: string | null = null;
+    try {
+      catalog = await loadPartnerCatalog();
+    } catch (caught) {
+      catalogError =
+        caught instanceof Error
+          ? caught.message
+          : "Catalogus niet beschikbaar.";
+    }
+
+    const productId = section[1];
+    const selected = productId
+      ? catalog.find((item) => item.product_id === productId)
+      : undefined;
+
+    if (productId && selected) {
+      const commissionLabel =
+        selected.partner_commission_status === "active" &&
+        selected.partner_commission_type === "bps" &&
+        selected.partner_commission_value != null
+          ? `${(Number(selected.partner_commission_value) / 100).toFixed(1)}%`
+          : selected.partner_commission_status === "active" &&
+              selected.partner_commission_type === "fixed_cents" &&
+              selected.partner_commission_value != null
+            ? euro(
+                Number(selected.partner_commission_value),
+                selected.partner_commission_currency ?? "EUR",
+              )
+            : "Commissie wordt per aanvraag/offerte vastgesteld";
+
+      return (
+        <>
+          <PageHeader
+            title={selected.name}
+            description={
+              selected.partner_sales_copy ||
+              selected.short_description ||
+              "Partnerproduct uit centrale Owner-catalogus."
+            }
+          />
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card className="space-y-3 p-6 text-sm">
+              {selected.primary_image_path ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={`https://vdbdigital.nl${selected.primary_image_path}`}
+                  alt=""
+                  className="mb-4 h-40 w-full rounded-lg object-cover"
+                />
+              ) : null}
+              <dl className="grid gap-2">
+                <div>
+                  <dt className="text-muted">Categorie</dt>
+                  <dd>{selected.category_name ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">Klantprijs</dt>
+                  <dd>
+                    {selected.price_label ||
+                      (selected.price_cents != null
+                        ? euro(selected.price_cents, selected.currency ?? "EUR")
+                        : selected.from_price_cents != null
+                          ? `Vanaf ${euro(selected.from_price_cents, selected.currency ?? "EUR")}`
+                          : "Op aanvraag")}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted">Audience</dt>
+                  <dd>
+                    {[
+                      selected.audience_b2b ? "B2B" : null,
+                      selected.audience_b2c ? "B2C" : null,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ") || "—"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted">Partnercommissie</dt>
+                  <dd>{commissionLabel}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted">Voorwaarden</dt>
+                  <dd className="whitespace-pre-wrap">
+                    {selected.partner_terms ||
+                      "Zie centrale productvoorwaarden."}
+                  </dd>
+                </div>
+              </dl>
+            </Card>
+            <Card className="p-6">
+              <PartnerProductLeadForm
+                productId={selected.product_id}
+                productName={selected.name}
+                ctaMode={selected.cta_mode ?? "lead"}
+              />
+            </Card>
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <PageHeader
+          title={titles.products[0]}
+          description={titles.products[1]}
+        />
+        <Card className="mb-6 p-5 text-sm text-[#e5d3b0]">
+          Bron: Owner `list_partner_catalog` (geen lokale producttabel).
+          Checkout en Mollie blijven fail-closed.
+        </Card>
+        {catalogError ? (
+          <EmptyState
+            title="Catalogus niet beschikbaar"
+            description={
+              catalogError.includes("FORBIDDEN") ||
+              catalogError.includes("AUTH")
+                ? "Alleen actieve Partners zien producten. Pending/geschorste accounts krijgen geen verkoopmogelijkheden."
+                : catalogError
+            }
+          />
+        ) : catalog.length ? (
+          <Card className="p-6">
+            <Table>
+              <thead>
+                <tr className="text-muted border-b text-xs">
+                  <th className="pb-3">Product</th>
+                  <th className="pb-3">Categorie</th>
+                  <th className="pb-3">Prijs</th>
+                  <th className="pb-3">Commissie</th>
+                  <th className="pb-3">CTA</th>
+                </tr>
+              </thead>
+              <tbody>
+                {catalog.map((item) => (
+                  <tr
+                    key={item.product_id}
+                    className="border-border/50 border-b"
+                    data-testid={`partner-product-${item.slug}`}
+                  >
+                    <td className="py-4">
+                      <div className="font-medium">{item.name}</div>
+                      <div className="text-muted max-w-md text-xs">
+                        {(
+                          item.partner_sales_copy ||
+                          item.short_description ||
+                          ""
+                        ).slice(0, 120)}
+                      </div>
+                    </td>
+                    <td className="py-4 text-sm">
+                      {item.category_name ?? "—"}
+                    </td>
+                    <td className="py-4 text-sm">
+                      {item.price_label ||
+                        (item.price_cents != null
+                          ? euro(item.price_cents, item.currency ?? "EUR")
+                          : "Op aanvraag")}
+                    </td>
+                    <td className="py-4 text-sm">
+                      {item.partner_commission_status === "active" &&
+                      item.partner_commission_type === "bps" &&
+                      item.partner_commission_value != null
+                        ? `${(Number(item.partner_commission_value) / 100).toFixed(1)}%`
+                        : item.partner_commission_status === "active" &&
+                            item.partner_commission_type === "fixed_cents" &&
+                            item.partner_commission_value != null
+                          ? euro(
+                              Number(item.partner_commission_value),
+                              item.partner_commission_currency ?? "EUR",
+                            )
+                          : "Per offerte"}
+                    </td>
+                    <td className="py-4">
+                      <Link
+                        className="text-gold text-sm"
+                        href={`/dashboard/products/${item.product_id}`}
+                      >
+                        {item.cta_mode === "quote"
+                          ? "Offerte"
+                          : item.cta_mode === "lead_request"
+                            ? "Aanvragen"
+                            : "Lead"}
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Card>
+        ) : (
+          <EmptyState
+            title="Geen Partner-producten"
+            description="Er zijn geen eligible producten in de centrale catalogus voor dit account."
+          />
+        )}
       </>
     );
   }
@@ -201,6 +419,7 @@ export default async function SellerPage({
               <thead>
                 <tr className="text-muted border-b text-xs">
                   <th className="pb-3">Contact</th>
+                  <th className="pb-3">Product</th>
                   <th className="pb-3">Bedrijf</th>
                   <th className="pb-3">Status</th>
                 </tr>
@@ -217,6 +436,9 @@ export default async function SellerPage({
                       <div className="text-muted text-xs">
                         {lead.contact_email}
                       </div>
+                    </td>
+                    <td className="py-4 font-mono text-xs">
+                      {lead.product_slug ?? "—"}
                     </td>
                     <td className="py-4">{lead.company_name ?? "—"}</td>
                     <td className="py-4">
@@ -298,10 +520,10 @@ export default async function SellerPage({
           description={description}
           actions={
             newSale ? (
-              <Link href="/dashboard/sales/new">
+              <Link href="/dashboard/products">
                 <Button>
                   <Plus className="mr-2 h-4 w-4" />
-                  Nieuwe verkoop
+                  Lead / offerte
                 </Button>
               </Link>
             ) : undefined
@@ -524,7 +746,7 @@ export default async function SellerPage({
         <>
           <PageHeader
             title="Supportticket"
-            description={`ID ${ticketId.slice(0, 8)}…`}
+            description={`ID ${ticketId.slice(0, 8)}… · alleen publieke antwoorden`}
           />
           {replies.length ? (
             <Card
@@ -550,6 +772,9 @@ export default async function SellerPage({
               description="Interne supportantwoorden blijven verborgen voor partners."
             />
           )}
+          <Card className="mt-6 p-6">
+            <PartnerSupportReplyForm ticketId={ticketId} />
+          </Card>
         </>
       );
     }
@@ -592,9 +817,17 @@ export default async function SellerPage({
         ) : (
           <EmptyState
             title="Nog geen supporttickets"
-            description="Tickets verschijnen hier wanneer ze aan uw account zijn gekoppeld."
+            description="Maak een supportverzoek aan. Interne notities van VDB blijven altijd verborgen."
           />
         )}
+        <Card className="mt-6 p-6" data-testid="partner-support-create-card">
+          <h2 className="mb-2 text-sm font-medium">Nieuw supportverzoek</h2>
+          <p className="text-muted mb-2 text-xs">
+            Vereist organisatie-lidmaatschap op Owner. Attachments zijn niet
+            beschikbaar in deze release.
+          </p>
+          <PartnerSupportCreateForm />
+        </Card>
       </>
     );
   }
@@ -667,10 +900,10 @@ export default async function SellerPage({
         description={description}
         actions={
           newSale ? (
-            <Link href="/dashboard/sales/new">
+            <Link href="/dashboard/products">
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Nieuwe verkoop
+                Lead / offerte
               </Button>
             </Link>
           ) : undefined
@@ -683,37 +916,12 @@ export default async function SellerPage({
         description="Statussen worden nooit als betaald weergegeven zonder verificatie."
         action={
           slug === "support" ? (
-            <Button variant="outline">Supportverzoek starten</Button>
+            <Link href="/dashboard/support">
+              <Button variant="outline">Naar support</Button>
+            </Link>
           ) : undefined
         }
       />
-      {slug === "products" && (
-        <Card className="mt-6 p-5">
-          <Table>
-            <thead>
-              <tr className="text-muted border-b text-xs">
-                <th className="pb-3">Product</th>
-                <th className="pb-3">Status</th>
-                <th className="pb-3">Actie</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="py-4">
-                  Productcatalogus volgt via Owner-catalogus (buiten RC2
-                  partnerpin).
-                </td>
-                <td>
-                  <StatusBadge status="pending" />
-                </td>
-                <td>
-                  <ExternalLink className="text-gold h-4 w-4" />
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </Card>
-      )}
     </>
   );
 }

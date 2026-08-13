@@ -18,7 +18,8 @@ MFA PROVIDERS EXPORTS PRODUCTION STILL OPEN
 2. Production env vars on Vercel (never commit secrets).
 3. Mollie live/test keys + webhook URL verified.
 4. Resend domain verified + transactional templates checked.
-5. Identity provider contract signed **or** mandatory manual review policy accepted.
+5. External IDV provider **de-scoped for v1** — administrative partner review only;
+   do not enable `identity_verification_enabled` or configure IDV credentials for v1.
 6. Partner agreement reviewed by Dutch lawyer + accountant labels cleared.
 7. DNS `partners.vdbdigital.nl` → Vercel project + SSL.
 8. MFA enforced for owner/finance/sales/support admins (**next gate**).
@@ -29,6 +30,6 @@ MFA PROVIDERS EXPORTS PRODUCTION STILL OPEN
 
 - Not production activated.
 - Not payment-live.
-- Not KYC-live.
+- Not automatic-IDV/KYC-live (v1 de-scoped; administrative review only).
 - Not MFA-enforced.
 - Not legally finalized.
